@@ -1,0 +1,71 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[a4paper,left=3cm,right=3cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{times}
+\usepackage{authblk}
+\usepackage{lineno}
+\usepackage{caption}
+
+% Formatting settings
+\onehalfspacing
+\captionsetup{font=small,labelfont=bf}
+\renewcommand\Affilfont{\itshape\small}
+
+% Title formatting
+\makeatletter
+\renewcommand\maketitle{
+  \begin{flushleft}
+  {\LARGE\bfseries\@title\par}
+  \vskip 1em
+  {\large\@author\par}
+  \vskip 0.5em
+  {\small\@date}
+  \end{flushleft}
+  \par\vskip 1em
+}
+\makeatother
+
+\title{Package creation for understanding how the frequency of lab tests obtained vary dependent on objective clinical conditions.}
+
+\author[1]{Author One}
+\author[2]{Author Two}
+\affil[1]{Affiliation One}
+\affil[2]{Affiliation Two}
+
+\date{\today}
+
+\begin{document}
+\linenumbers
+\maketitle
+
+\begin{abstract}
+% Abstract content goes here
+\end{abstract}
+
+\section{Introduction}
+% Introduction content goes here
+
+\section{Methods}
+% Methods content goes here
+
+\section{Results}
+% Results content goes here
+
+\section{Discussion}
+% Discussion content goes here
+
+\section{Conclusion}
+% Conclusion content goes here
+
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\end{document}
