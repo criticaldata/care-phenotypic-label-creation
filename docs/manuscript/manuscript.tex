@@ -32,7 +32,7 @@
 }
 \makeatother
 
-\title{Package creation for understanding how the frequency of lab tests obtained vary dependent on objective clinical conditions.}
+\title{Care Phenotypes: A Novel Approach to Understanding Healthcare Data Collection Patterns}
 
 \author[1]{Author One}
 \author[2]{Author Two}
@@ -46,11 +46,49 @@
 \maketitle
 
 \begin{abstract}
-% Abstract content goes here
+Healthcare data collection patterns, particularly in laboratory measurements, often exhibit significant variation across patients that cannot be fully explained by objective clinical factors. This variation, which may reflect subjective decisions by medical staff, can introduce systematic biases in healthcare datasets and affect the validity of research findings. We present a novel approach to understanding these variations through the concept of "care phenotypes" - objective labels based on observable care patterns that reflect how patients are monitored and treated. We develop a Python package that enables researchers to identify and analyze these care phenotypes, accounting for legitimate clinical factors while highlighting unexplained variations in care delivery. Using examples from the MIMIC dataset, we demonstrate how care phenotypes can help researchers understand potential biases in their data and develop more robust healthcare algorithms. Our approach moves beyond traditional demographic labels for fairness evaluation, focusing instead on observable care patterns that may better reflect disparities in healthcare delivery.
 \end{abstract}
 
 \section{Introduction}
-% Introduction content goes here
+
+Healthcare datasets, particularly those derived from electronic health records (EHRs), have become invaluable resources for medical research and the development of healthcare algorithms. However, these datasets often contain systematic variations in data collection patterns that can significantly impact research validity and algorithmic fairness. This variation is particularly evident in laboratory measurements and routine care procedures, where the frequency and consistency of data collection can vary substantially across patients.
+
+\subsection{The Challenge of Data Collection Variation}
+
+In intensive care settings, for example, patients with similar objective measures of illness severity (such as SOFA scores or Charlson comorbidity indices) may receive markedly different frequencies of monitoring and testing. While some of this variation can be explained by legitimate clinical factors - such as illness severity or pre-existing conditions - significant unexplained variations often remain. These variations may reflect subjective decisions by medical staff about monitoring intensity, potentially introducing systematic biases into healthcare datasets.
+
+\subsection{Current Limitations in Fairness Evaluation}
+
+Traditional approaches to evaluating healthcare algorithm fairness often rely on demographic labels (race, ethnicity, gender) that may be poorly captured in healthcare data and may not fully reflect the complex factors influencing care decisions. These demographic-based approaches can miss important disparities in care delivery that manifest through variations in monitoring and treatment patterns.
+
+\subsection{Introducing Care Phenotypes}
+
+We propose a novel approach to understanding healthcare disparities through the concept of "care phenotypes" - objective labels based on observable care patterns that reflect how patients are monitored and treated. These phenotypes are derived from easily measurable metrics such as:
+\begin{itemize}
+    \item Frequency of laboratory measurements
+    \item Regularity of routine care procedures
+    \item Consistency of vital sign monitoring
+\end{itemize}
+
+\subsection{Objectives}
+
+The primary objectives of this work are to:
+\begin{itemize}
+    \item Develop a framework for identifying and analyzing care phenotypes in healthcare datasets
+    \item Create tools to help researchers understand potential biases in their data
+    \item Provide methods for accounting for legitimate clinical factors while highlighting unexplained variations
+    \item Enable more objective fairness evaluation of healthcare algorithms
+\end{itemize}
+
+\subsection{Implementation}
+
+We present a Python package that implements this framework, focusing on:
+\begin{itemize}
+    \item Analysis of measurement frequencies and patterns
+    \item Adjustment for clinical factors
+    \item Creation of care phenotype labels
+    \item Evaluation of healthcare algorithm fairness using these phenotypes
+\end{itemize}
 
 \section{Methods}
 % Methods content goes here
@@ -63,7 +101,6 @@
 
 \section{Conclusion}
 % Conclusion content goes here
-
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}

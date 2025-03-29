@@ -1,5 +1,6 @@
 """
 Module for creating care phenotype labels based on observable care patterns.
+Focuses on understanding variations in lab test measurements and care patterns.
 """
 
 import pandas as pd
@@ -7,11 +8,13 @@ import numpy as np
 from typing import Dict, List, Optional, Tuple
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
+from scipy import stats
 
 class CarePhenotypeCreator:
     """
     Creates objective care phenotype labels based on observable care patterns.
-    Focuses on easily measurable care metrics like lab test frequency and routine care procedures.
+    Focuses on understanding variations in lab test measurements and care patterns,
+    accounting for legitimate clinical factors while identifying unexplained variations.
     """
     
     def __init__(self, 
@@ -25,7 +28,7 @@ class CarePhenotypeCreator:
         data : pd.DataFrame
             DataFrame containing care pattern data
         clinical_factors : List[str], optional
-            List of columns containing clinical factors that may justify care variations
+            List of columns containing clinical factors (e.g., SOFA score, Charlson score)
         """
         self.data = data
         self.clinical_factors = clinical_factors or []
@@ -37,11 +40,12 @@ class CarePhenotypeCreator:
                               adjust_for_clinical: bool = True) -> pd.Series:
         """
         Create care phenotype labels based on observed care patterns.
+        Accounts for clinical factors to identify unexplained variations.
         
         Parameters
         ----------
         care_patterns : List[str]
-            List of columns containing care pattern measurements
+            List of columns containing care pattern measurements (e.g., lab test frequencies)
         n_clusters : int
             Number of phenotype groups to create
         adjust_for_clinical : bool
@@ -71,6 +75,7 @@ class CarePhenotypeCreator:
     def _adjust_for_clinical_factors(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Adjust care patterns for clinical factors that may justify variations.
+        Uses regression analysis to account for legitimate clinical factors.
         
         Parameters
         ----------
@@ -80,11 +85,68 @@ class CarePhenotypeCreator:
         Returns
         -------
         pd.DataFrame
-            Adjusted care pattern measurements
+            Adjusted care pattern measurements (residuals after accounting for clinical factors)
         """
-        # Implementation for adjusting care patterns based on clinical factors
-        # This could involve regression analysis or other statistical methods
-        pass
+        adjusted_X = X.copy()
+        
+        for pattern in X.columns:
+            # Create regression model for each care pattern
+            X_clinical = self.data[self.clinical_factors]
+            y = X[pattern]
+            
+            # Fit linear regression
+            model = stats.linregress(X_clinical, y)
+            
+            # Calculate residuals (unexplained variation)
+            predicted = model.predict(X_clinical)
+            residuals = y - predicted
+            
+            adjusted_X[pattern] = residuals
+            
+        return adjusted_X
+    
+    def analyze_unexplained_variation(self,
+                                    care_pattern: str,
+                                    phenotype_labels: pd.Series) -> Dict:
+        """
+        Analyze unexplained variation in care patterns across phenotypes.
+        
+        Parameters
+        ----------
+        care_pattern : str
+            Column containing the care pattern to analyze
+        phenotype_labels : pd.Series
+            Created phenotype labels
+            
+        Returns
+        -------
+        Dict
+            Dictionary containing analysis of unexplained variation
+        """
+        results = {}
+        
+        # Calculate variation within each phenotype
+        for phenotype in phenotype_labels.unique():
+            mask = phenotype_labels == phenotype
+            pattern_data = self.data.loc[mask, care_pattern]
+            
+            results[phenotype] = {
+                'mean': pattern_data.mean(),
+                'std': pattern_data.std(),
+                'sample_size': len(pattern_data),
+                'unexplained_variance': pattern_data.var()
+            }
+            
+        # Calculate statistical significance of variation
+        f_stat, p_value = stats.f_oneway(*[
+            self.data.loc[phenotype_labels == p, care_pattern]
+            for p in phenotype_labels.unique()
+        ])
+        
+        results['f_statistic'] = f_stat
+        results['p_value'] = p_value
+        
+        return results
     
     def validate_phenotypes(self,
                           labels: pd.Series,
@@ -112,7 +174,8 @@ class CarePhenotypeCreator:
                 results[metric] = self._check_clinical_separation(labels)
             elif metric == 'pattern_consistency':
                 results[metric] = self._check_pattern_consistency(labels)
-            # Add more validation metrics as needed
+            elif metric == 'unexplained_variation':
+                results[metric] = self._check_unexplained_variation(labels)
             
         return results
     
@@ -120,12 +183,31 @@ class CarePhenotypeCreator:
         """
         Check if phenotypes show meaningful separation in clinical factors.
         """
-        # Implementation for checking clinical factor separation
-        pass
+        results = {}
+        
+        for factor in self.clinical_factors:
+            f_stat, p_value = stats.f_oneway(*[
+                self.data.loc[labels == p, factor]
+                for p in labels.unique()
+            ])
+            
+            results[factor] = {
+                'f_statistic': f_stat,
+                'p_value': p_value
+            }
+            
+        return results
     
     def _check_pattern_consistency(self, labels: pd.Series) -> Dict:
         """
         Check if phenotypes show consistent patterns across different care measures.
         """
         # Implementation for checking pattern consistency
+        pass
+    
+    def _check_unexplained_variation(self, labels: pd.Series) -> Dict:
+        """
+        Check the amount of unexplained variation in care patterns.
+        """
+        # Implementation for checking unexplained variation
         pass 
