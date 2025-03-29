@@ -246,3 +246,225 @@ class CarePatternAnalyzer:
                 }
             
         return results 
+    
+    def visualize_clinical_separation(self,
+                                    phenotype_labels: pd.Series,
+                                    clinical_factors: List[str],
+                                    output_file: Optional[str] = None) -> None:
+        """
+        Visualize clinical separation across phenotypes.
+        
+        Parameters
+        ----------
+        phenotype_labels : pd.Series
+            Series containing phenotype labels
+        clinical_factors : List[str]
+            List of clinical factors to visualize
+        output_file : str, optional
+            Path to save the visualization
+        """
+        n_factors = len(clinical_factors)
+        n_phenotypes = len(phenotype_labels.unique())
+        
+        # Create subplot grid
+        fig, axes = plt.subplots(n_factors, 1, figsize=(12, 4*n_factors))
+        if n_factors == 1:
+            axes = [axes]
+            
+        for idx, factor in enumerate(clinical_factors):
+            # Create violin plot
+            sns.violinplot(x=phenotype_labels, y=self.data[factor], ax=axes[idx])
+            axes[idx].set_title(f'Distribution of {factor} across Phenotypes')
+            axes[idx].set_xlabel('Phenotype')
+            axes[idx].set_ylabel(factor)
+            
+            # Add statistical significance annotations
+            for i in range(n_phenotypes):
+                for j in range(i+1, n_phenotypes):
+                    # Perform t-test between phenotypes
+                    t_stat, p_value = stats.ttest_ind(
+                        self.data.loc[phenotype_labels == i, factor],
+                        self.data.loc[phenotype_labels == j, factor]
+                    )
+                    
+                    if p_value < 0.05:
+                        # Add significance annotation
+                        y_max = self.data[factor].max()
+                        axes[idx].annotate(
+                            f'p={p_value:.3f}',
+                            xy=((i+j)/2, y_max),
+                            xytext=(0, 5),
+                            textcoords='offset points',
+                            ha='center',
+                            va='bottom'
+                        )
+        
+        plt.tight_layout()
+        
+        if output_file:
+            plt.savefig(output_file)
+        else:
+            plt.show()
+            
+    def visualize_unexplained_variation(self,
+                                      phenotype_labels: pd.Series,
+                                      care_patterns: List[str],
+                                      clinical_factors: List[str],
+                                      output_file: Optional[str] = None) -> None:
+        """
+        Visualize unexplained variation in care patterns across phenotypes.
+        
+        Parameters
+        ----------
+        phenotype_labels : pd.Series
+            Series containing phenotype labels
+        care_patterns : List[str]
+            List of care patterns to analyze
+        clinical_factors : List[str]
+            List of clinical factors to consider
+        output_file : str, optional
+            Path to save the visualization
+        """
+        n_patterns = len(care_patterns)
+        n_phenotypes = len(phenotype_labels.unique())
+        
+        # Create subplot grid
+        fig, axes = plt.subplots(n_patterns, 1, figsize=(12, 4*n_patterns))
+        if n_patterns == 1:
+            axes = [axes]
+            
+        for idx, pattern in enumerate(care_patterns):
+            # Calculate explained and unexplained variation
+            explained_var = []
+            unexplained_var = []
+            
+            for phenotype in phenotype_labels.unique():
+                mask = phenotype_labels == phenotype
+                pattern_data = self.data.loc[mask, pattern]
+                clinical_data = self.data.loc[mask, clinical_factors]
+                
+                # Fit regression model
+                model = stats.linregress(clinical_data, pattern_data)
+                predicted = model.predict(clinical_data)
+                
+                # Calculate variances
+                total_var = np.var(pattern_data)
+                explained = np.var(predicted)
+                unexplained = total_var - explained
+                
+                explained_var.append(explained)
+                unexplained_var.append(unexplained)
+            
+            # Create stacked bar plot
+            x = np.arange(n_phenotypes)
+            width = 0.35
+            
+            axes[idx].bar(x, explained_var, width, label='Explained', color='lightblue')
+            axes[idx].bar(x, unexplained_var, width, bottom=explained_var, label='Unexplained', color='lightcoral')
+            
+            axes[idx].set_title(f'Variation in {pattern} across Phenotypes')
+            axes[idx].set_xlabel('Phenotype')
+            axes[idx].set_ylabel('Variance')
+            axes[idx].legend()
+            
+            # Add percentage annotations
+            for i in range(n_phenotypes):
+                total = explained_var[i] + unexplained_var[i]
+                unexplained_pct = unexplained_var[i] / total * 100
+                axes[idx].annotate(
+                    f'{unexplained_pct:.1f}%',
+                    xy=(i, total),
+                    xytext=(0, 5),
+                    textcoords='offset points',
+                    ha='center',
+                    va='bottom'
+                )
+        
+        plt.tight_layout()
+        
+        if output_file:
+            plt.savefig(output_file)
+        else:
+            plt.show()
+            
+    def visualize_variation_trends(self,
+                                 phenotype_labels: pd.Series,
+                                 care_patterns: List[str],
+                                 clinical_factors: List[str],
+                                 time_column: str,
+                                 output_file: Optional[str] = None) -> None:
+        """
+        Visualize trends in explained and unexplained variation over time.
+        
+        Parameters
+        ----------
+        phenotype_labels : pd.Series
+            Series containing phenotype labels
+        care_patterns : List[str]
+            List of care patterns to analyze
+        clinical_factors : List[str]
+            List of clinical factors to consider
+        time_column : str
+            Column containing temporal information
+        output_file : str, optional
+            Path to save the visualization
+        """
+        n_patterns = len(care_patterns)
+        
+        # Create subplot grid
+        fig, axes = plt.subplots(n_patterns, 1, figsize=(12, 4*n_patterns))
+        if n_patterns == 1:
+            axes = [axes]
+            
+        for idx, pattern in enumerate(care_patterns):
+            # Calculate variation over time
+            time_points = sorted(self.data[time_column].unique())
+            explained_trend = []
+            unexplained_trend = []
+            
+            for time_point in time_points:
+                mask = self.data[time_column] == time_point
+                pattern_data = self.data.loc[mask, pattern]
+                clinical_data = self.data.loc[mask, clinical_factors]
+                
+                if len(pattern_data) > 0:
+                    # Fit regression model
+                    model = stats.linregress(clinical_data, pattern_data)
+                    predicted = model.predict(clinical_data)
+                    
+                    # Calculate variances
+                    total_var = np.var(pattern_data)
+                    explained = np.var(predicted)
+                    unexplained = total_var - explained
+                    
+                    explained_trend.append(explained)
+                    unexplained_trend.append(unexplained)
+            
+            # Create line plot
+            axes[idx].plot(time_points, explained_trend, label='Explained', color='lightblue')
+            axes[idx].plot(time_points, unexplained_trend, label='Unexplained', color='lightcoral')
+            
+            axes[idx].set_title(f'Variation Trends in {pattern} over Time')
+            axes[idx].set_xlabel('Time')
+            axes[idx].set_ylabel('Variance')
+            axes[idx].legend()
+            
+            # Add percentage annotations at key points
+            for i in [0, len(time_points)-1]:
+                total = explained_trend[i] + unexplained_trend[i]
+                unexplained_pct = unexplained_trend[i] / total * 100
+                axes[idx].annotate(
+                    f'{unexplained_pct:.1f}%',
+                    xy=(time_points[i], total),
+                    xytext=(0, 5),
+                    textcoords='offset points',
+                    ha='center',
+                    va='bottom'
+                )
+        
+        plt.tight_layout()
+        
+        if output_file:
+            plt.savefig(output_file)
+        else:
+            plt.show() 

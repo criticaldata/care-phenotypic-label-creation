@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from care_phenotype_analyzer import CarePhenotypeCreator, CarePatternAnalyzer, FairnessEvaluator
+import matplotlib.pyplot as plt
 
 @pytest.fixture
 def sample_data():
@@ -164,4 +165,96 @@ def test_care_pattern_disparity(sample_data, sample_predictions):
     # Check that clinical factors are analyzed
     assert 'care_pattern_disparity' in results
     assert 'sofa_score' in results['care_pattern_disparity']
-    assert 'charlson_score' in results['care_pattern_disparity'] 
+    assert 'charlson_score' in results['care_pattern_disparity']
+
+@pytest.fixture
+def phenotype_labels(sample_data):
+    """Generate sample phenotype labels."""
+    return pd.Series(np.random.randint(0, 3, len(sample_data)), index=sample_data.index)
+
+def test_visualize_clinical_separation(sample_data, phenotype_labels):
+    """Test visualization of clinical separation."""
+    analyzer = CarePatternAnalyzer(sample_data)
+    
+    # Test with single clinical factor
+    analyzer.visualize_clinical_separation(
+        phenotype_labels=phenotype_labels,
+        clinical_factors=['sofa_score']
+    )
+    plt.close()
+    
+    # Test with multiple clinical factors
+    analyzer.visualize_clinical_separation(
+        phenotype_labels=phenotype_labels,
+        clinical_factors=['sofa_score', 'charlson_score']
+    )
+    plt.close()
+    
+    # Test with output file
+    analyzer.visualize_clinical_separation(
+        phenotype_labels=phenotype_labels,
+        clinical_factors=['sofa_score'],
+        output_file='test_separation.png'
+    )
+    plt.close()
+
+def test_visualize_unexplained_variation(sample_data, phenotype_labels):
+    """Test visualization of unexplained variation."""
+    analyzer = CarePatternAnalyzer(sample_data)
+    
+    # Test with single care pattern
+    analyzer.visualize_unexplained_variation(
+        phenotype_labels=phenotype_labels,
+        care_patterns=['lab_test_frequency'],
+        clinical_factors=['sofa_score', 'charlson_score']
+    )
+    plt.close()
+    
+    # Test with multiple care patterns
+    analyzer.visualize_unexplained_variation(
+        phenotype_labels=phenotype_labels,
+        care_patterns=['lab_test_frequency', 'routine_care_frequency'],
+        clinical_factors=['sofa_score', 'charlson_score']
+    )
+    plt.close()
+    
+    # Test with output file
+    analyzer.visualize_unexplained_variation(
+        phenotype_labels=phenotype_labels,
+        care_patterns=['lab_test_frequency'],
+        clinical_factors=['sofa_score', 'charlson_score'],
+        output_file='test_variation.png'
+    )
+    plt.close()
+
+def test_visualize_variation_trends(sample_data, phenotype_labels):
+    """Test visualization of variation trends."""
+    analyzer = CarePatternAnalyzer(sample_data)
+    
+    # Test with single care pattern
+    analyzer.visualize_variation_trends(
+        phenotype_labels=phenotype_labels,
+        care_patterns=['lab_test_frequency'],
+        clinical_factors=['sofa_score', 'charlson_score'],
+        time_column='timestamp'
+    )
+    plt.close()
+    
+    # Test with multiple care patterns
+    analyzer.visualize_variation_trends(
+        phenotype_labels=phenotype_labels,
+        care_patterns=['lab_test_frequency', 'routine_care_frequency'],
+        clinical_factors=['sofa_score', 'charlson_score'],
+        time_column='timestamp'
+    )
+    plt.close()
+    
+    # Test with output file
+    analyzer.visualize_variation_trends(
+        phenotype_labels=phenotype_labels,
+        care_patterns=['lab_test_frequency'],
+        clinical_factors=['sofa_score', 'charlson_score'],
+        time_column='timestamp',
+        output_file='test_trends.png'
+    )
+    plt.close() 
