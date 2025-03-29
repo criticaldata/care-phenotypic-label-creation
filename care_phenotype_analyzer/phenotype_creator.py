@@ -201,13 +201,117 @@ class CarePhenotypeCreator:
     def _check_pattern_consistency(self, labels: pd.Series) -> Dict:
         """
         Check if phenotypes show consistent patterns across different care measures.
+        
+        Parameters
+        ----------
+        labels : pd.Series
+            Created phenotype labels
+            
+        Returns
+        -------
+        Dict
+            Dictionary containing pattern consistency metrics
         """
-        # Implementation for checking pattern consistency
-        pass
+        results = {}
+        
+        # Get all care pattern columns (excluding clinical factors)
+        care_patterns = [col for col in self.data.columns 
+                        if col not in self.clinical_factors]
+        
+        # Calculate consistency metrics for each phenotype
+        for phenotype in labels.unique():
+            mask = labels == phenotype
+            phenotype_data = self.data.loc[mask, care_patterns]
+            
+            # Calculate correlation matrix between patterns
+            corr_matrix = phenotype_data.corr()
+            
+            # Calculate mean absolute correlation
+            mean_corr = np.abs(corr_matrix).mean().mean()
+            
+            # Calculate pattern stability (variance of correlations)
+            pattern_stability = corr_matrix.var().mean()
+            
+            results[phenotype] = {
+                'mean_correlation': mean_corr,
+                'pattern_stability': pattern_stability,
+                'sample_size': np.sum(mask),
+                'num_patterns': len(care_patterns)
+            }
+            
+        # Calculate overall consistency metrics
+        results['overall'] = {
+            'mean_pattern_correlation': np.mean([r['mean_correlation'] 
+                                               for r in results.values()]),
+            'mean_pattern_stability': np.mean([r['pattern_stability'] 
+                                             for r in results.values()]),
+            'total_phenotypes': len(results)
+        }
+        
+        return results
     
     def _check_unexplained_variation(self, labels: pd.Series) -> Dict:
         """
         Check the amount of unexplained variation in care patterns.
+        
+        Parameters
+        ----------
+        labels : pd.Series
+            Created phenotype labels
+            
+        Returns
+        -------
+        Dict
+            Dictionary containing unexplained variation metrics
         """
-        # Implementation for checking unexplained variation
-        pass 
+        results = {}
+        
+        # Get all care pattern columns (excluding clinical factors)
+        care_patterns = [col for col in self.data.columns 
+                        if col not in self.clinical_factors]
+        
+        # Calculate unexplained variation for each phenotype
+        for phenotype in labels.unique():
+            mask = labels == phenotype
+            phenotype_data = self.data.loc[mask, care_patterns]
+            
+            # Calculate total variance
+            total_variance = phenotype_data.var().mean()
+            
+            # Calculate explained variance by clinical factors
+            explained_variance = 0
+            if self.clinical_factors:
+                for pattern in care_patterns:
+                    X = self.data.loc[mask, self.clinical_factors]
+                    y = self.data.loc[mask, pattern]
+                    
+                    # Fit linear regression
+                    model = stats.linregress(X, y)
+                    predicted = model.predict(X)
+                    
+                    # Calculate R-squared
+                    r_squared = 1 - np.sum((y - predicted) ** 2) / np.sum((y - y.mean()) ** 2)
+                    explained_variance += r_squared * phenotype_data[pattern].var()
+                
+                explained_variance /= len(care_patterns)
+            
+            # Calculate unexplained variance
+            unexplained_variance = total_variance - explained_variance
+            
+            results[phenotype] = {
+                'total_variance': total_variance,
+                'explained_variance': explained_variance,
+                'unexplained_variance': unexplained_variance,
+                'unexplained_ratio': unexplained_variance / total_variance if total_variance > 0 else 0,
+                'sample_size': np.sum(mask)
+            }
+        
+        # Calculate overall variation metrics
+        results['overall'] = {
+            'mean_unexplained_ratio': np.mean([r['unexplained_ratio'] 
+                                             for r in results.values()]),
+            'total_phenotypes': len(results),
+            'total_samples': len(labels)
+        }
+        
+        return results 
