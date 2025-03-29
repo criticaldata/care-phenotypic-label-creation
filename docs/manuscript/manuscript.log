@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.3.12)  29 MAR 2025 12:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.3.12)  29 MAR 2025 12:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -253,49 +253,147 @@ Package caption Info: Standard document class detected.
 \c@caption@flags=\count291
 \c@continuedfloat=\count292
 )
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 4
-4.
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/appendix\appendix.sty
+Package: appendix 2020/02/08 v1.2c extra appendix facilities
+\c@@pps=\count293
+\c@@ppsavesec=\count294
+\c@@ppsaveapp=\count295
+)
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen174
+\lightrulewidth=\dimen175
+\cmidrulewidth=\dimen176
+\belowrulesep=\dimen177
+\belowbottomsep=\dimen178
+\aboverulesep=\dimen179
+\abovetopsep=\dimen180
+\cmidrulesep=\dimen181
+\cmidrulekern=\dimen182
+\defaultaddspace=\dimen183
+\@cmidla=\count296
+\@cmidlb=\count297
+\@aboverulesep=\dimen184
+\@belowrulesep=\dimen185
+\@thisruleclass=\count298
+\@lastruleclass=\count299
+\@thisrulewidth=\dimen186
+)
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
+Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
+\multirow@colwidth=\skip57
+\multirow@cntb=\count300
+\multirow@dima=\skip58
+\bigstrutjot=\dimen187
+)
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/siunitx\siunitx.sty
+Package: siunitx 2025-03-17 v3.4.7 A comprehensive (SI) units package
+\l__siunitx_number_uncert_offset_int=\count301
+\l__siunitx_number_exponent_fixed_int=\count302
+\l__siunitx_number_min_decimal_int=\count303
+\l__siunitx_number_min_integer_int=\count304
+\l__siunitx_number_round_precision_int=\count305
+\l__siunitx_number_lower_threshold_int=\count306
+\l__siunitx_number_upper_threshold_int=\count307
+\l__siunitx_number_group_first_int=\count308
+\l__siunitx_number_group_size_int=\count309
+\l__siunitx_number_group_minimum_int=\count310
+\l__siunitx_angle_tmp_dim=\dimen188
+\l__siunitx_angle_marker_box=\box54
+\l__siunitx_angle_unit_box=\box55
+\l__siunitx_compound_count_int=\count311
 
-(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/translations\translatio
+ns.sty
+Package: translations 2022/02/05 v1.12 internationalization of LaTeX2e packages
+ (CN)
+
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
+.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
+ty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+))
+\l__siunitx_table_tmp_box=\box56
+\l__siunitx_table_tmp_dim=\dimen189
+\l__siunitx_table_column_width_dim=\dimen190
+\l__siunitx_table_integer_box=\box57
+\l__siunitx_table_decimal_box=\box58
+\l__siunitx_table_uncert_box=\box59
+\l__siunitx_table_before_box=\box60
+\l__siunitx_table_after_box=\box61
+\l__siunitx_table_before_dim=\dimen191
+\l__siunitx_table_carry_dim=\dimen192
+\l__siunitx_unit_tmp_int=\count312
+\l__siunitx_unit_position_int=\count313
+\l__siunitx_unit_total_int=\count314
+ (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+Package: array 2023/10/16 v2.5g Tabular extension package (FMi)
+\col@sep=\dimen193
+\ar@mcellbox=\box62
+\extrarowheight=\dimen194
+\NC@list=\toks27
+\extratabsurround=\skip59
+\backup@length=\skip60
+\ar@cellbox=\box63
+)) (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/graphics\color.sty
+Package: color 2022/01/06 v1.3d Standard LaTeX Color (DPC)
+
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 149.
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
+)
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 4
+8.
+ (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count293
-\l__pdf_internal_box=\box54
+\l__color_backend_stack_int=\count315
+\l__pdf_internal_box=\box64
 ) (manuscript.aux)
 \openout1 = `manuscript.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
 
 (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count294
-\scratchdimen=\dimen174
-\scratchbox=\box55
-\nofMPsegments=\count295
-\nofMParguments=\count296
-\everyMPshowfont=\toks27
-\MPscratchCnt=\count297
-\MPscratchDim=\dimen175
-\MPnumerator=\count298
-\makeMPintoPDFobject=\count299
-\everyMPtoPDFconversion=\toks28
+\scratchcounter=\count316
+\scratchdimen=\dimen195
+\scratchbox=\box65
+\nofMPsegments=\count317
+\nofMParguments=\count318
+\everyMPshowfont=\toks28
+\MPscratchCnt=\count319
+\MPscratchDim=\dimen196
+\MPnumerator=\count320
+\makeMPintoPDFobject=\count321
+\everyMPtoPDFconversion=\toks29
 )
 (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -343,18 +441,27 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for OT1+phv on input line 4
-6.
+
+(C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/translations/dicts\tran
+slations-basic-dictionary-english.trsl
+File: translations-basic-dictionary-english.trsl (english translation file `tra
+nslations-basic-dictionary')
+)
+Package translations Info: loading dictionary `translations-basic-dictionary' f
+or `english'. on input line 48.
+LaTeX Font Info:    Trying to load font information for OT1+phv on input line 5
+0.
+
 (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1phv.fd
 File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 46.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 50.
 
 
 (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 46.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 50.
 
 
 (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -364,60 +471,48 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {C:/Users/tn351/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/tn35
 1/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 6
-8.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 7
+2.
 
 (C:\Users\tn351\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 [2]
-Overfull \hbox (6.9067pt too wide) in paragraph at lines 115--116
+Overfull \hbox (6.9067pt too wide) in paragraph at lines 108--109
 []\OT1/ptm/b/n/12 SOFA (Se-quen-tial Or-gan Fail-ure As-sess-ment)\OT1/ptm/m/n/
 12 : Eval-u-ates or-gan dys-func-tion across
  []
 
 
-Overfull \hbox (19.26727pt too wide) in paragraph at lines 116--117
-[]\OT1/ptm/b/n/12 Charlson Co-mor-bid-ity In-dex\OT1/ptm/m/n/12 : As-sesses pa-
-tient co-mor-bid-ity bur-den us-ing 17 weighted
- []
-
-
-Overfull \hbox (7.72322pt too wide) in paragraph at lines 117--118
+Overfull \hbox (7.72322pt too wide) in paragraph at lines 110--111
 []\OT1/ptm/b/n/12 APACHE II\OT1/ptm/m/n/12 : Com-pre-hen-sive scor-ing sys-tem 
 in-cor-po-rat-ing acute phys-i-ol-ogy, chronic
  []
 
-[3] [4] [5] [6] [7]
-Overfull \hbox (3.07805pt too wide) in paragraph at lines 265--266
-[]\OT1/ptm/b/n/12 Separation Vi-su-al-iza-tion\OT1/ptm/m/n/12 : Clear vi-su-al-
-iza-tions of clin-i-cal fac-tor dis-tri-bu-tions across
- []
-
-[8] [9] [10] [11]
+[3] [4] [5]
 No file manuscript.bbl.
-[12] (manuscript.aux)
+[6] [7] [8] (manuscript.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 7092 strings out of 474486
- 116043 string characters out of 5743755
- 1936542 words of memory out of 5000000
- 29279 multiletter control sequences out of 15000+600000
- 588044 words of font info for 96 fonts, out of 8000000 for 9000
+ 11355 strings out of 474486
+ 244934 string characters out of 5743755
+ 1935542 words of memory out of 5000000
+ 33500 multiletter control sequences out of 15000+600000
+ 589291 words of font info for 101 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,5n,65p,1186b,314s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 73i,8n,80p,1186b,531s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8
 a.pfb>
-Output written on manuscript.pdf (12 pages, 71997 bytes).
+Output written on manuscript.pdf (8 pages, 65365 bytes).
 PDF statistics:
- 62 PDF objects out of 1000 (max. 8388607)
+ 50 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

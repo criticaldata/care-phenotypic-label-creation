@@ -1,224 +1,297 @@
 """
-Performance tests for the care phenotype analyzer.
+Module for performance and stress testing.
 
-This module contains tests to validate the performance characteristics
-of the system, including large dataset handling, memory usage, and
-processing speed optimization.
+This module provides comprehensive tests for evaluating the performance
+and stability of the system under various conditions.
 """
 
 import pytest
 import pandas as pd
 import numpy as np
-import psutil
 import time
+import psutil
+import tempfile
+import shutil
+from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+from typing import List, Dict, Any
 import gc
-from datetime import datetime, timedelta
-from memory_profiler import profile
-from care_phenotype_analyzer.mimic.synthetic_data import SyntheticDataGenerator
-from care_phenotype_analyzer.phenotype_creator import CarePhenotypeCreator
-from care_phenotype_analyzer.pattern_analyzer import CarePatternAnalyzer
-from care_phenotype_analyzer.fairness_evaluator import FairnessEvaluator
+
+from care_phenotype_analyzer.memory import MemoryOptimizer
+from care_phenotype_analyzer.parallel import ParallelProcessor
+from care_phenotype_analyzer.monitoring import SystemMonitor
 
 @pytest.fixture
-def large_synthetic_data():
-    """Generate large synthetic dataset for performance testing."""
-    generator = SyntheticDataGenerator(n_patients=10000, seed=42)
-    return generator.generate_all()
-
-@pytest.fixture
-def large_phenotype_creator(large_synthetic_data):
-    """Create a CarePhenotypeCreator instance with large synthetic data."""
-    # Create sample care pattern data
-    care_patterns = pd.DataFrame({
-        'subject_id': large_synthetic_data['patients']['subject_id'],
-        'timestamp': [datetime.now() + timedelta(hours=i) for i in range(len(large_synthetic_data['patients']))],
-        'pattern_1': np.random.normal(0, 1, len(large_synthetic_data['patients'])),
-        'pattern_2': np.random.normal(0, 1, len(large_synthetic_data['patients'])),
-        'clinical_factor_1': np.random.normal(0, 1, len(large_synthetic_data['patients'])),
-        'clinical_factor_2': np.random.normal(0, 1, len(large_synthetic_data['patients']))
+def large_dataset():
+    """Create a large test dataset."""
+    # Create a large DataFrame
+    n_rows = 1_000_000
+    n_cols = 100
+    
+    df = pd.DataFrame({
+        f'col_{i}': np.random.randn(n_rows) for i in range(n_cols)
     })
     
-    return CarePhenotypeCreator(
-        data=care_patterns,
-        clinical_factors=['clinical_factor_1', 'clinical_factor_2']
-    )
-
-def get_memory_usage():
-    """Get current memory usage of the process."""
-    process = psutil.Process()
-    return process.memory_info().rss / 1024 / 1024  # Convert to MB
-
-def test_large_dataset_handling(large_phenotype_creator):
-    """Test handling of large datasets."""
-    # Record initial memory usage
-    initial_memory = get_memory_usage()
+    # Add some categorical columns
+    df['category'] = np.random.choice(['A', 'B', 'C', 'D'], n_rows)
+    df['status'] = np.random.choice(['active', 'inactive', 'pending'], n_rows)
     
-    # Create phenotype labels
+    return df
+
+@pytest.fixture
+def performance_monitor():
+    """Create a temporary directory for monitoring logs."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        monitor = SystemMonitor(log_dir=temp_dir)
+        yield monitor
+        monitor.stop_monitoring()
+
+def test_memory_optimization_performance(large_dataset, performance_monitor):
+    """Test memory optimization performance with large datasets."""
+    optimizer = MemoryOptimizer(log_dir=performance_monitor.log_dir)
+    
+    # Measure initial memory usage
+    initial_memory = large_dataset.memory_usage(deep=True).sum()
+    
+    # Time the optimization
     start_time = time.time()
-    labels = large_phenotype_creator.create_phenotype_labels()
-    end_time = time.time()
+    optimized_df = optimizer.optimize_dataframe(large_dataset)
+    optimization_time = time.time() - start_time
     
-    # Record final memory usage
-    final_memory = get_memory_usage()
-    memory_increase = final_memory - initial_memory
+    # Measure final memory usage
+    final_memory = optimized_df.memory_usage(deep=True).sum()
     
-    # Validate results
-    assert len(labels) == len(large_phenotype_creator.data), \
-        "Number of labels should match number of subjects"
-    assert not labels.isnull().any(), "Labels should not contain null values"
+    # Verify performance metrics
+    assert optimization_time < 10.0  # Should complete within 10 seconds
+    assert final_memory < initial_memory  # Should reduce memory usage
     
     # Log performance metrics
-    print(f"\nLarge Dataset Handling Metrics:")
-    print(f"Number of subjects: {len(labels)}")
-    print(f"Processing time: {end_time - start_time:.2f} seconds")
-    print(f"Memory increase: {memory_increase:.2f} MB")
-    
-    # Performance assertions
-    assert end_time - start_time < 30, "Processing time should be under 30 seconds"
-    assert memory_increase < 1000, "Memory increase should be under 1GB"
+    performance_monitor.logger.info(
+        f"Memory optimization performance: "
+        f"time={optimization_time:.2f}s, "
+        f"memory_reduction={((initial_memory - final_memory) / initial_memory * 100):.1f}%"
+    )
 
-def test_memory_usage_optimization(large_phenotype_creator):
-    """Test memory usage optimization during processing."""
-    # Record initial memory usage
-    initial_memory = get_memory_usage()
+def test_parallel_processing_performance(large_dataset, performance_monitor):
+    """Test parallel processing performance."""
+    processor = ParallelProcessor(log_dir=performance_monitor.log_dir)
     
-    # Process data in chunks
-    chunk_size = 1000
-    total_subjects = len(large_phenotype_creator.data)
-    memory_usage_history = []
+    # Create a computationally intensive function
+    def process_chunk(chunk):
+        return chunk.apply(lambda x: np.exp(x) + np.sin(x))
     
-    for start_idx in range(0, total_subjects, chunk_size):
-        # Record memory before chunk processing
-        pre_chunk_memory = get_memory_usage()
-        
-        # Process chunk
-        chunk_data = large_phenotype_creator.data.iloc[start_idx:start_idx + chunk_size]
-        chunk_labels = large_phenotype_creator.create_phenotype_labels()
-        
-        # Record memory after chunk processing
-        post_chunk_memory = get_memory_usage()
-        memory_usage_history.append(post_chunk_memory - pre_chunk_memory)
-        
-        # Force garbage collection
-        gc.collect()
-    
-    # Calculate memory metrics
-    avg_memory_increase = np.mean(memory_usage_history)
-    max_memory_increase = np.max(memory_usage_history)
-    
-    # Log memory metrics
-    print(f"\nMemory Usage Optimization Metrics:")
-    print(f"Average memory increase per chunk: {avg_memory_increase:.2f} MB")
-    print(f"Maximum memory increase: {max_memory_increase:.2f} MB")
-    
-    # Performance assertions
-    assert avg_memory_increase < 100, "Average memory increase should be under 100MB per chunk"
-    assert max_memory_increase < 200, "Maximum memory increase should be under 200MB"
-
-def test_processing_speed_optimization(large_phenotype_creator):
-    """Test processing speed optimization."""
-    # Test different batch sizes
-    batch_sizes = [100, 500, 1000, 2000]
-    processing_times = []
-    
-    for batch_size in batch_sizes:
-        # Record start time
-        start_time = time.time()
-        
-        # Process data in batches
-        total_subjects = len(large_phenotype_creator.data)
-        for start_idx in range(0, total_subjects, batch_size):
-            batch_data = large_phenotype_creator.data.iloc[start_idx:start_idx + batch_size]
-            batch_labels = large_phenotype_creator.create_phenotype_labels()
-        
-        # Record end time
-        end_time = time.time()
-        processing_times.append((batch_size, end_time - start_time))
-    
-    # Log processing times
-    print(f"\nProcessing Speed Optimization Metrics:")
-    for batch_size, processing_time in processing_times:
-        print(f"Batch size {batch_size}: {processing_time:.2f} seconds")
-    
-    # Performance assertions
-    assert all(time < 60 for _, time in processing_times), \
-        "All batch processing times should be under 60 seconds"
-    
-    # Verify that larger batch sizes are generally faster
-    for i in range(len(processing_times) - 1):
-        assert processing_times[i][1] >= processing_times[i + 1][1], \
-            f"Larger batch size {processing_times[i+1][0]} should not be slower than {processing_times[i][0]}"
-
-def test_concurrent_processing(large_phenotype_creator):
-    """Test concurrent processing capabilities."""
-    import concurrent.futures
-    
-    # Split data into chunks
-    chunk_size = 1000
-    total_subjects = len(large_phenotype_creator.data)
-    chunks = []
-    
-    for start_idx in range(0, total_subjects, chunk_size):
-        chunk_data = large_phenotype_creator.data.iloc[start_idx:start_idx + chunk_size]
-        chunks.append(chunk_data)
-    
-    # Process chunks concurrently
+    # Time parallel processing
     start_time = time.time()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        futures = []
-        for chunk in chunks:
-            future = executor.submit(large_phenotype_creator.create_phenotype_labels)
-            futures.append(future)
-        
-        # Wait for all chunks to complete
-        concurrent.futures.wait(futures)
+    result = processor.process_dataframe_parallel(
+        large_dataset,
+        process_chunk,
+        chunk_size=10000
+    )
+    processing_time = time.time() - start_time
     
-    end_time = time.time()
-    concurrent_time = end_time - start_time
+    # Verify performance
+    assert processing_time < 30.0  # Should complete within 30 seconds
+    assert len(result) == len(large_dataset)
     
-    # Process chunks sequentially for comparison
-    start_time = time.time()
-    for chunk in chunks:
-        large_phenotype_creator.create_phenotype_labels()
-    end_time = time.time()
-    sequential_time = end_time - start_time
-    
-    # Log concurrent processing metrics
-    print(f"\nConcurrent Processing Metrics:")
-    print(f"Sequential processing time: {sequential_time:.2f} seconds")
-    print(f"Concurrent processing time: {concurrent_time:.2f} seconds")
-    print(f"Speedup factor: {sequential_time / concurrent_time:.2f}x")
-    
-    # Performance assertions
-    assert concurrent_time < sequential_time, "Concurrent processing should be faster than sequential"
-    assert concurrent_time < 30, "Concurrent processing should complete under 30 seconds"
+    # Log performance metrics
+    performance_monitor.logger.info(
+        f"Parallel processing performance: "
+        f"time={processing_time:.2f}s, "
+        f"rows_processed={len(result)}"
+    )
 
-def test_memory_cleanup(large_phenotype_creator):
-    """Test memory cleanup after processing."""
-    # Record initial memory
-    initial_memory = get_memory_usage()
+def test_stress_memory_usage(performance_monitor):
+    """Test system stability under memory stress."""
+    optimizer = MemoryOptimizer(log_dir=performance_monitor.log_dir)
     
-    # Process data
-    labels = large_phenotype_creator.create_phenotype_labels()
+    # Create a list of large arrays
+    large_arrays = []
+    for _ in range(100):
+        arr = np.random.rand(1000, 1000)
+        large_arrays.append(arr)
     
-    # Record memory after processing
-    post_processing_memory = get_memory_usage()
+    # Monitor memory pressure
+    pressure_history = []
+    for _ in range(10):
+        pressure = optimizer.check_memory_pressure()
+        pressure_history.append(pressure)
+        
+        # Clear memory periodically
+        if pressure['status'] == 'warning':
+            optimizer.clear_memory()
     
-    # Force garbage collection
-    gc.collect()
+    # Verify system stability
+    assert all(p['status'] != 'critical' for p in pressure_history)
     
-    # Record memory after cleanup
-    post_cleanup_memory = get_memory_usage()
+    # Log stress test results
+    performance_monitor.logger.info(
+        f"Memory stress test completed: "
+        f"max_pressure={max(p['system_percent'] for p in pressure_history):.1f}%"
+    )
+
+def test_stress_parallel_processing(performance_monitor):
+    """Test system stability under parallel processing stress."""
+    processor = ParallelProcessor(log_dir=performance_monitor.log_dir)
     
-    # Log memory cleanup metrics
-    print(f"\nMemory Cleanup Metrics:")
-    print(f"Initial memory: {initial_memory:.2f} MB")
-    print(f"Post-processing memory: {post_processing_memory:.2f} MB")
-    print(f"Post-cleanup memory: {post_cleanup_memory:.2f} MB")
-    print(f"Memory cleanup: {post_processing_memory - post_cleanup_memory:.2f} MB")
+    # Create multiple large datasets
+    datasets = []
+    for _ in range(5):
+        df = pd.DataFrame({
+            f'col_{i}': np.random.randn(100000) for i in range(50)
+        })
+        datasets.append(df)
     
-    # Performance assertions
-    assert post_cleanup_memory - initial_memory < 100, \
-        "Memory usage after cleanup should be close to initial"
-    assert post_processing_memory > post_cleanup_memory, \
-        "Garbage collection should reduce memory usage" 
+    # Process datasets in parallel
+    def process_dataset(df):
+        return df.apply(lambda x: np.exp(x) + np.sin(x))
+    
+    start_time = time.time()
+    results = []
+    
+    for df in datasets:
+        result = processor.process_dataframe_parallel(
+            df,
+            process_dataset,
+            chunk_size=1000
+        )
+        results.append(result)
+    
+    processing_time = time.time() - start_time
+    
+    # Verify results
+    assert all(len(r) == len(d) for r, d in zip(results, datasets))
+    assert processing_time < 60.0  # Should complete within 60 seconds
+    
+    # Log stress test results
+    performance_monitor.logger.info(
+        f"Parallel processing stress test completed: "
+        f"time={processing_time:.2f}s, "
+        f"datasets_processed={len(datasets)}"
+    )
+
+def test_stress_memory_optimization(performance_monitor):
+    """Test system stability under memory optimization stress."""
+    optimizer = MemoryOptimizer(log_dir=performance_monitor.log_dir)
+    
+    # Create a sequence of large datasets
+    datasets = []
+    for _ in range(10):
+        df = pd.DataFrame({
+            f'col_{i}': np.random.randint(-1000, 1000, 100000, dtype=np.int64)
+            for i in range(20)
+        })
+        datasets.append(df)
+    
+    # Optimize datasets sequentially
+    start_time = time.time()
+    optimized_datasets = []
+    
+    for df in datasets:
+        optimized_df = optimizer.optimize_dataframe(df)
+        optimized_datasets.append(optimized_df)
+        
+        # Check memory pressure
+        pressure = optimizer.check_memory_pressure()
+        if pressure['status'] == 'warning':
+            optimizer.clear_memory()
+    
+    processing_time = time.time() - start_time
+    
+    # Verify results
+    assert all(len(o) == len(d) for o, d in zip(optimized_datasets, datasets))
+    assert processing_time < 30.0  # Should complete within 30 seconds
+    
+    # Log stress test results
+    performance_monitor.logger.info(
+        f"Memory optimization stress test completed: "
+        f"time={processing_time:.2f}s, "
+        f"datasets_optimized={len(datasets)}"
+    )
+
+def test_concurrent_operations(performance_monitor):
+    """Test system stability under concurrent operations."""
+    optimizer = MemoryOptimizer(log_dir=performance_monitor.log_dir)
+    processor = ParallelProcessor(log_dir=performance_monitor.log_dir)
+    
+    # Create test data
+    df = pd.DataFrame({
+        f'col_{i}': np.random.randn(100000) for i in range(20)
+    })
+    
+    # Define concurrent operations
+    def optimize_data():
+        return optimizer.optimize_dataframe(df)
+    
+    def process_data():
+        return processor.process_dataframe_parallel(
+            df,
+            lambda x: np.exp(x) + np.sin(x),
+            chunk_size=1000
+        )
+    
+    # Run operations concurrently
+    start_time = time.time()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        future1 = executor.submit(optimize_data)
+        future2 = executor.submit(process_data)
+        
+        results = [f.result() for f in [future1, future2]]
+    
+    processing_time = time.time() - start_time
+    
+    # Verify results
+    assert len(results[0]) == len(df)
+    assert len(results[1]) == len(df)
+    assert processing_time < 20.0  # Should complete within 20 seconds
+    
+    # Log concurrent operations results
+    performance_monitor.logger.info(
+        f"Concurrent operations test completed: "
+        f"time={processing_time:.2f}s"
+    )
+
+def test_long_running_operations(performance_monitor):
+    """Test system stability during long-running operations."""
+    optimizer = MemoryOptimizer(log_dir=performance_monitor.log_dir)
+    
+    # Create a large dataset
+    df = pd.DataFrame({
+        f'col_{i}': np.random.randn(1000000) for i in range(50)
+    })
+    
+    # Perform multiple operations over time
+    start_time = time.time()
+    operation_times = []
+    
+    for _ in range(5):
+        op_start = time.time()
+        
+        # Optimize data
+        optimized_df = optimizer.optimize_dataframe(df)
+        
+        # Process data
+        result = optimized_df.apply(lambda x: np.exp(x) + np.sin(x))
+        
+        # Clear memory
+        optimizer.clear_memory()
+        
+        op_time = time.time() - op_start
+        operation_times.append(op_time)
+        
+        # Check memory pressure
+        pressure = optimizer.check_memory_pressure()
+        if pressure['status'] == 'warning':
+            optimizer.clear_memory()
+    
+    total_time = time.time() - start_time
+    
+    # Verify stability
+    assert total_time < 120.0  # Should complete within 120 seconds
+    assert all(t < 30.0 for t in operation_times)  # Each operation should be fast
+    
+    # Log long-running test results
+    performance_monitor.logger.info(
+        f"Long-running operations test completed: "
+        f"total_time={total_time:.2f}s, "
+        f"avg_operation_time={sum(operation_times)/len(operation_times):.2f}s"
+    ) 
