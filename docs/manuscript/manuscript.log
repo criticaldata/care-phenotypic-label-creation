@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.3.12)  29 MAR 2025 11:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.3.12)  29 MAR 2025 11:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -371,19 +371,37 @@ LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 6
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 [2]
+Overfull \hbox (6.9067pt too wide) in paragraph at lines 115--116
+[]\OT1/ptm/b/n/12 SOFA (Se-quen-tial Or-gan Fail-ure As-sess-ment)\OT1/ptm/m/n/
+12 : Eval-u-ates or-gan dys-func-tion across
+ []
+
+
+Overfull \hbox (19.26727pt too wide) in paragraph at lines 116--117
+[]\OT1/ptm/b/n/12 Charlson Co-mor-bid-ity In-dex\OT1/ptm/m/n/12 : As-sesses pa-
+tient co-mor-bid-ity bur-den us-ing 17 weighted
+ []
+
+
+Overfull \hbox (7.72322pt too wide) in paragraph at lines 117--118
+[]\OT1/ptm/b/n/12 APACHE II\OT1/ptm/m/n/12 : Com-pre-hen-sive scor-ing sys-tem 
+in-cor-po-rat-ing acute phys-i-ol-ogy, chronic
+ []
+
+[3]
 No file manuscript.bbl.
-[3] (manuscript.aux)
+[4] (manuscript.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 7090 strings out of 474486
- 116023 string characters out of 5743755
+ 7092 strings out of 474486
+ 116043 string characters out of 5743755
  1934542 words of memory out of 5000000
- 29278 multiletter control sequences out of 15000+600000
- 586418 words of font info for 94 fonts, out of 8000000 for 9000
+ 29279 multiletter control sequences out of 15000+600000
+ 588044 words of font info for 96 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  57i,5n,65p,1186b,314s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a
@@ -391,9 +409,9 @@ Here is how much of TeX's memory you used:
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8
 a.pfb>
-Output written on manuscript.pdf (3 pages, 53201 bytes).
+Output written on manuscript.pdf (4 pages, 57407 bytes).
 PDF statistics:
- 33 PDF objects out of 1000 (max. 8388607)
+ 36 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

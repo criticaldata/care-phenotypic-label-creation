@@ -8,15 +8,15 @@
   - [x] Add methods for calculating clinical scores
   - [x] Add data validation and cleaning methods
 
-- [ ] Create MIMIC-specific data structures
-  - [ ] Define standard data formats
-  - [ ] Create data conversion utilities
-  - [ ] Add data integrity checks
+- [x] Create MIMIC-specific data structures
+  - [x] Define standard data formats
+  - [x] Create data conversion utilities
+  - [x] Add data integrity checks
 
-- [ ] Implement clinical score calculations
-  - [ ] SOFA score calculation
-  - [ ] Charlson comorbidity index
-  - [ ] Other relevant clinical scores
+- [x] Implement clinical score calculations
+  - [x] SOFA score calculation
+  - [x] Charlson comorbidity index
+  - [x] Other relevant clinical scores
 
 ## 2. Core Functionality Enhancement (High Priority)
 - [ ] Complete implementation of existing methods

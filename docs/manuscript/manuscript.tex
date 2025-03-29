@@ -91,7 +91,57 @@ We present a Python package that implements this framework, focusing on:
 \end{itemize}
 
 \section{Methods}
-% Methods content goes here
+
+\subsection{Data Processing Framework}
+
+We developed a comprehensive framework for processing MIMIC-IV data, implemented as a Python package. The framework consists of several key components:
+
+\subsubsection{Data Structures and Formats}
+
+We defined standardized data structures for various MIMIC data types, including:
+\begin{itemize}
+    \item Patient demographics and admission information
+    \item Laboratory measurements and chart events
+    \item ICU stays and clinical scores
+\end{itemize}
+
+These structures ensure type safety and consistency throughout the data processing pipeline. We implemented robust data validation and integrity checks to maintain data quality.
+
+\subsubsection{Clinical Score Calculations}
+
+Our framework includes implementations of several widely-used clinical scoring systems:
+
+\begin{itemize}
+    \item \textbf{SOFA (Sequential Organ Failure Assessment)}: Evaluates organ dysfunction across six systems (respiratory, coagulation, liver, cardiovascular, CNS, and renal)
+    \item \textbf{Charlson Comorbidity Index}: Assesses patient comorbidity burden using 17 weighted conditions
+    \item \textbf{APACHE II}: Comprehensive scoring system incorporating acute physiology, chronic health, and age components
+    \item \textbf{SAPS II}: Simplified acute physiology scoring system
+    \item \textbf{Elixhauser Comorbidity Index}: Detailed assessment of 31 comorbidities
+\end{itemize}
+
+Each scoring system is implemented as a modular component, allowing for flexible integration and extension. The implementations handle missing data gracefully and provide detailed component-level analysis.
+
+\subsubsection{Data Processing Pipeline}
+
+The data processing pipeline includes:
+\begin{itemize}
+    \item Standardized data loading and validation
+    \item Automated data cleaning and normalization
+    \item Efficient handling of time-series data
+    \item Integration of multiple data sources
+    \item Comprehensive error handling and logging
+\end{itemize}
+
+\subsection{Implementation Details}
+
+Our implementation focuses on:
+\begin{itemize}
+    \item \textbf{Modularity}: Each component is self-contained and follows consistent interfaces
+    \item \textbf{Type Safety}: Comprehensive type hints and validation
+    \item \textbf{Documentation}: Detailed docstrings and usage examples
+    \item \textbf{Performance}: Optimized data structures and algorithms
+    \item \textbf{Extensibility}: Easy addition of new scoring systems and data types
+\end{itemize}
 
 \section{Results}
 % Results content goes here
