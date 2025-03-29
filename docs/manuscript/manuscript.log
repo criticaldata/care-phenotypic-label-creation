@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.3.12)  29 MAR 2025 11:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.3.12)  29 MAR 2025 12:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -388,9 +388,9 @@ Overfull \hbox (7.72322pt too wide) in paragraph at lines 117--118
 in-cor-po-rat-ing acute phys-i-ol-ogy, chronic
  []
 
-[3]
+[3] [4]
 No file manuscript.bbl.
-[4] (manuscript.aux)
+[5] (manuscript.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -409,9 +409,9 @@ Here is how much of TeX's memory you used:
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8
 a.pfb>
-Output written on manuscript.pdf (4 pages, 57407 bytes).
+Output written on manuscript.pdf (5 pages, 59647 bytes).
 PDF statistics:
- 36 PDF objects out of 1000 (max. 8388607)
+ 39 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
