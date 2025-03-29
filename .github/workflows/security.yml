@@ -1,0 +1,53 @@
+name: Security
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        pip install -e .
+        
+    - name: Run security checks
+      run: |
+        bandit -r care_phenotype_analyzer
+        safety check
+        
+    - name: Check dependencies
+      run: |
+        pip install pip-audit
+        pip-audit
+        
+    - name: Update dependencies
+      if: github.event_name == 'schedule'
+      run: |
+        pip install pip-tools
+        pip-compile --upgrade requirements.in
+        pip-compile --upgrade requirements-dev.in
+        
+    - name: Create Pull Request
+      if: github.event_name == 'schedule'
+      uses: peter-evans/create-pull-request@v4
+      with:
+        commit-message: 'chore: update dependencies'
+        title: 'chore: update dependencies'
+        body: 'Automated dependency updates'
+        branch: update-dependencies 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.3.12)  29 MAR 2025 12:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.3.12)  29 MAR 2025 12:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -388,9 +388,15 @@ Overfull \hbox (7.72322pt too wide) in paragraph at lines 117--118
 in-cor-po-rat-ing acute phys-i-ol-ogy, chronic
  []
 
-[3] [4]
+[3] [4] [5] [6] [7]
+Overfull \hbox (3.07805pt too wide) in paragraph at lines 265--266
+[]\OT1/ptm/b/n/12 Separation Vi-su-al-iza-tion\OT1/ptm/m/n/12 : Clear vi-su-al-
+iza-tions of clin-i-cal fac-tor dis-tri-bu-tions across
+ []
+
+[8] [9] [10] [11]
 No file manuscript.bbl.
-[5] (manuscript.aux)
+[12] (manuscript.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -399,7 +405,7 @@ L3 programming layer <2024-01-04>
 Here is how much of TeX's memory you used:
  7092 strings out of 474486
  116043 string characters out of 5743755
- 1934542 words of memory out of 5000000
+ 1936542 words of memory out of 5000000
  29279 multiletter control sequences out of 15000+600000
  588044 words of font info for 96 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -409,9 +415,9 @@ Here is how much of TeX's memory you used:
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a
 .pfb><C:/Users/tn351/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8
 a.pfb>
-Output written on manuscript.pdf (5 pages, 59647 bytes).
+Output written on manuscript.pdf (12 pages, 71997 bytes).
 PDF statistics:
- 39 PDF objects out of 1000 (max. 8388607)
+ 62 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

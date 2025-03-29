@@ -13,6 +13,8 @@ import logging
 from datetime import datetime
 import json
 from pathlib import Path
+import time
+from .monitoring import SystemMonitor
 
 # Set up logging with more detailed format
 logging.basicConfig(
@@ -47,7 +49,9 @@ class CarePhenotypeCreator:
     def __init__(self, 
                  data: pd.DataFrame,
                  clinical_factors: Optional[List[str]] = None,
-                 log_file: Optional[str] = None):
+                 n_clusters: int = 3,
+                 random_state: int = 42,
+                 log_dir: str = "logs"):
         """
         Initialize the phenotype creator with care data.
         
@@ -57,8 +61,12 @@ class CarePhenotypeCreator:
             DataFrame containing care pattern data
         clinical_factors : List[str], optional
             List of columns containing clinical factors (e.g., SOFA score, Charlson score)
-        log_file : str, optional
-            Path to log file for detailed logging
+        n_clusters : int
+            Number of phenotype groups to create
+        random_state : int
+            Random state for reproducibility
+        log_dir : str
+            Directory for monitoring logs
             
         Raises
         ------
@@ -67,134 +75,198 @@ class CarePhenotypeCreator:
         DataTypeError
             If data types are incorrect
         """
-        self.log_file = log_file
-        if log_file:
-            self._setup_file_logging(log_file)
-            
-        logger.info("Initializing CarePhenotypeCreator")
-        logger.debug(f"Input data shape: {data.shape}")
-        logger.debug(f"Clinical factors: {clinical_factors}")
+        self.data = data
+        self.clinical_factors = clinical_factors or []
+        self.n_clusters = n_clusters
+        self.random_state = random_state
+        
+        # Initialize monitoring system
+        self.monitor = SystemMonitor(log_dir=log_dir)
+        
+        # Log initialization
+        self.monitor.logger.info(
+            f"Initialized CarePhenotypeCreator with {len(data)} records "
+            f"and {len(self.clinical_factors)} clinical factors"
+        )
+        
+    def create_phenotype_labels(self) -> pd.Series:
+        """Create phenotype labels based on care patterns.
+        
+        Returns:
+            Series containing phenotype labels
+        """
+        start_time = time.time()
         
         try:
-            self._validate_input_data(data, clinical_factors)
-            self._check_data_types(data)
-            self.data = data
-            self.clinical_factors = clinical_factors or []
-            self.scaler = StandardScaler()
-            logger.info("CarePhenotypeCreator initialized successfully")
+            # Preprocess data
+            self.monitor.logger.info("Starting data preprocessing")
+            preprocessed_data = self._preprocess_data()
+            
+            # Cluster data
+            self.monitor.logger.info("Starting data clustering")
+            clusters = self._cluster_data(preprocessed_data)
+            
+            # Create labels
+            self.monitor.logger.info("Creating phenotype labels")
+            labels = pd.Series(clusters, index=self.data.index)
+            
+            # Record processing metrics
+            processing_time = time.time() - start_time
+            self.monitor.record_processing(
+                processing_time=processing_time,
+                batch_size=len(self.data)
+            )
+            
+            # Log success
+            self.monitor.logger.info(
+                f"Successfully created phenotype labels for {len(labels)} records "
+                f"in {processing_time:.2f} seconds"
+            )
+            
+            return labels
+            
         except Exception as e:
-            logger.error(f"Initialization failed: {str(e)}")
-            raise
-        
-    def _setup_file_logging(self, log_file: str) -> None:
-        """
-        Set up file logging with detailed formatting.
-        
-        Parameters
-        ----------
-        log_file : str
-            Path to log file
-        """
-        log_path = Path(log_file)
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        file_handler = logging.FileHandler(log_file)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        ))
-        logger.addHandler(file_handler)
-        
-    def _log_error(self, error: Exception, context: str) -> None:
-        """
-        Log error with context and details.
-        
-        Parameters
-        ----------
-        error : Exception
-            The error that occurred
-        context : str
-            Context where the error occurred
-        """
-        error_details = {
-            'timestamp': datetime.now().isoformat(),
-            'context': context,
-            'error_type': type(error).__name__,
-            'message': str(error),
-            'traceback': self._get_traceback(error)
-        }
-        
-        logger.error(f"Error in {context}: {str(error)}")
-        logger.debug(f"Error details: {json.dumps(error_details, indent=2)}")
-        
-    def _get_traceback(self, error: Exception) -> str:
-        """
-        Get formatted traceback for error.
-        
-        Parameters
-        ----------
-        error : Exception
-            The error to get traceback for
+            # Record error
+            error_msg = f"Error creating phenotype labels: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise CarePhenotypeError(error_msg)
             
-        Returns
-        -------
-        str
-            Formatted traceback
-        """
-        import traceback
-        return ''.join(traceback.format_tb(error.__traceback__))
+    def _preprocess_data(self) -> pd.DataFrame:
+        """Preprocess the data for clustering.
         
-    def _check_data_types(self, data: pd.DataFrame) -> None:
+        Returns:
+            Preprocessed DataFrame
         """
-        Perform comprehensive data type checking.
-        
-        Parameters
-        ----------
-        data : pd.DataFrame
-            DataFrame to check
-            
-        Raises
-        ------
-        DataTypeError
-            If data types are incorrect
-        """
-        logger.debug("Starting data type checking")
-        
         try:
-            # Define expected types for required columns
-            expected_types = {
-                'subject_id': (np.integer, int),
-                'timestamp': (pd.Timestamp, datetime),
-            }
-            
-            # Check required column types
-            for col, expected_type in expected_types.items():
-                if not isinstance(data[col].iloc[0], expected_type):
-                    raise DataTypeError(f"Column '{col}' must be of type {expected_type}")
-                    
-            # Check clinical factor types
+            # Select features for clustering
+            features = self.data.select_dtypes(include=[np.number]).columns
             if self.clinical_factors:
-                for factor in self.clinical_factors:
-                    if not pd.api.types.is_numeric_dtype(data[factor]):
-                        raise DataTypeError(f"Clinical factor '{factor}' must be numeric")
-                        
-            # Check for NaN values in required columns
-            for col in expected_types:
-                if data[col].isna().any():
-                    raise DataTypeError(f"Column '{col}' contains NaN values")
-                    
-            # Check timestamp column format
-            if not pd.api.types.is_datetime64_any_dtype(data['timestamp']):
-                try:
-                    data['timestamp'] = pd.to_datetime(data['timestamp'])
-                except Exception as e:
-                    raise DataTypeError(f"Invalid timestamp format: {str(e)}")
-                    
-            logger.info("Data type checking successful")
+                features = [f for f in features if f not in self.clinical_factors]
+                
+            # Scale features
+            scaler = StandardScaler()
+            scaled_data = scaler.fit_transform(self.data[features])
+            
+            return pd.DataFrame(scaled_data, columns=features)
             
         except Exception as e:
-            self._log_error(e, "data type checking")
-            raise
+            error_msg = f"Error preprocessing data: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise CarePhenotypeError(error_msg)
             
+    def _cluster_data(self, data: pd.DataFrame) -> np.ndarray:
+        """Cluster the preprocessed data.
+        
+        Args:
+            data: Preprocessed DataFrame
+            
+        Returns:
+            Array of cluster labels
+        """
+        try:
+            # Perform clustering
+            kmeans = KMeans(
+                n_clusters=self.n_clusters,
+                random_state=self.random_state
+            )
+            clusters = kmeans.fit_predict(data)
+            
+            # Log clustering results
+            cluster_sizes = pd.Series(clusters).value_counts()
+            self.monitor.logger.info(
+                f"Clustering complete. Cluster sizes: {cluster_sizes.to_dict()}"
+            )
+            
+            return clusters
+            
+        except Exception as e:
+            error_msg = f"Error clustering data: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise CarePhenotypeError(error_msg)
+            
+    def analyze_clinical_separation(self) -> Dict[str, float]:
+        """Analyze clinical separation between phenotypes.
+        
+        Returns:
+            Dictionary of separation metrics
+        """
+        if not self.clinical_factors:
+            warning_msg = "No clinical factors provided for separation analysis"
+            self.monitor.record_warning(warning_msg)
+            return {}
+            
+        try:
+            separation_metrics = {}
+            
+            for factor in self.clinical_factors:
+                # Calculate separation for each clinical factor
+                f_stat, p_value = stats.f_oneway(*[
+                    self.data[self.data['phenotype'] == i][factor]
+                    for i in range(self.n_clusters)
+                ])
+                
+                separation_metrics[factor] = {
+                    'f_statistic': f_stat,
+                    'p_value': p_value
+                }
+                
+            # Log separation results
+            self.monitor.logger.info(
+                f"Clinical separation analysis complete. "
+                f"Factors analyzed: {list(separation_metrics.keys())}"
+            )
+            
+            return separation_metrics
+            
+        except Exception as e:
+            error_msg = f"Error analyzing clinical separation: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise CarePhenotypeError(error_msg)
+            
+    def analyze_unexplained_variation(self) -> Dict[str, float]:
+        """Analyze unexplained variation in care patterns.
+        
+        Returns:
+            Dictionary of variation metrics
+        """
+        try:
+            variation_metrics = {}
+            
+            # Calculate total variation
+            total_var = self.data.var()
+            
+            # Calculate explained variation (by clinical factors)
+            if self.clinical_factors:
+                clinical_data = self.data[self.clinical_factors]
+                explained_var = clinical_data.var()
+                
+                # Calculate unexplained variation
+                unexplained_var = total_var - explained_var
+                
+                variation_metrics = {
+                    'total_variation': total_var,
+                    'explained_variation': explained_var,
+                    'unexplained_variation': unexplained_var
+                }
+                
+            # Log variation results
+            self.monitor.logger.info(
+                f"Variation analysis complete. "
+                f"Clinical factors considered: {len(self.clinical_factors)}"
+            )
+            
+            return variation_metrics
+            
+        except Exception as e:
+            error_msg = f"Error analyzing unexplained variation: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise CarePhenotypeError(error_msg)
+            
+    def __del__(self):
+        """Cleanup when the object is destroyed."""
+        if hasattr(self, 'monitor'):
+            self.monitor.stop_monitoring()
+        
     def _validate_input_data(self, 
                            data: pd.DataFrame, 
                            clinical_factors: Optional[List[str]] = None) -> None:
@@ -343,63 +415,6 @@ class CarePhenotypeCreator:
             
         logger.info("Phenotype labels validation successful")
         
-    def create_phenotype_labels(self,
-                              care_patterns: List[str],
-                              n_clusters: int = 3,
-                              adjust_for_clinical: bool = True) -> pd.Series:
-        """
-        Create care phenotype labels based on observed care patterns.
-        Accounts for clinical factors to identify unexplained variations.
-        
-        Parameters
-        ----------
-        care_patterns : List[str]
-            List of columns containing care pattern measurements (e.g., lab test frequencies)
-        n_clusters : int
-            Number of phenotype groups to create
-        adjust_for_clinical : bool
-            Whether to adjust for clinical factors before creating phenotypes
-            
-        Returns
-        -------
-        pd.Series
-            Series containing phenotype labels for each patient
-            
-        Raises
-        ------
-        ValueError
-            If care patterns are invalid or n_clusters is invalid
-        TypeError
-            If data types are incorrect
-        """
-        # Validate inputs
-        self._validate_care_patterns(care_patterns)
-        if not isinstance(n_clusters, int):
-            raise TypeError("n_clusters must be an integer")
-        if n_clusters < 2:
-            raise ValueError("n_clusters must be at least 2")
-        if n_clusters > len(self.data):
-            raise ValueError("n_clusters cannot be greater than number of samples")
-            
-        # Extract care pattern features
-        X = self.data[care_patterns].copy()
-        
-        # Adjust for clinical factors if specified
-        if adjust_for_clinical and self.clinical_factors:
-            X = self._adjust_for_clinical_factors(X)
-        
-        # Scale features
-        X_scaled = self.scaler.fit_transform(X)
-        
-        # Create phenotype clusters
-        kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-        labels = kmeans.fit_predict(X_scaled)
-        
-        # Validate labels
-        self._validate_phenotype_labels(pd.Series(labels, index=self.data.index))
-        
-        return pd.Series(labels, index=self.data.index)
-    
     def _adjust_for_clinical_factors(self, X: pd.DataFrame) -> pd.DataFrame:
         """
         Adjust care patterns for clinical factors that may justify variations.

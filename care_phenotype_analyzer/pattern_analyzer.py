@@ -1,470 +1,361 @@
 """
-Module for analyzing care patterns and their relationships.
-Focuses on understanding variations in lab test measurements and care patterns.
+Module for analyzing care patterns and their relationships with clinical factors.
 """
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union, Any
 from scipy import stats
 import matplotlib.pyplot as plt
 import seaborn as sns
+from datetime import datetime
+import time
+from .monitoring import SystemMonitor
 
 class CarePatternAnalyzer:
-    """
-    Analyzes care patterns and their relationships to identify meaningful variations.
-    Focuses on understanding how lab test measurements and care patterns vary across patients.
-    """
+    """Class for analyzing care patterns and their relationships with clinical factors."""
     
-    def __init__(self, data: pd.DataFrame):
-        """
-        Initialize the pattern analyzer with care data.
+    def __init__(self,
+                 data: pd.DataFrame,
+                 clinical_factors: Optional[List[str]] = None,
+                 log_dir: str = "logs"):
+        """Initialize the pattern analyzer.
         
-        Parameters
-        ----------
-        data : pd.DataFrame
-            DataFrame containing care pattern data
+        Args:
+            data: DataFrame containing care pattern data
+            clinical_factors: List of clinical factors to consider
+            log_dir: Directory for monitoring logs
         """
         self.data = data
+        self.clinical_factors = clinical_factors or []
+        
+        # Initialize monitoring system
+        self.monitor = SystemMonitor(log_dir=log_dir)
+        
+        # Log initialization
+        self.monitor.logger.info(
+            f"Initialized CarePatternAnalyzer with {len(data)} records "
+            f"and {len(self.clinical_factors)} clinical factors"
+        )
         
     def analyze_measurement_frequency(self,
                                     measurement_column: str,
                                     time_column: str,
                                     clinical_factors: Optional[List[str]] = None,
                                     group_by: Optional[List[str]] = None) -> pd.DataFrame:
-        """
-        Analyze the frequency of specific measurements (e.g., lab tests).
-        Accounts for clinical factors that may justify variations.
+        """Analyze the frequency of specific measurements.
         
-        Parameters
-        ----------
-        measurement_column : str
-            Column containing the measurement to analyze
-        time_column : str
-            Column containing temporal information
-        clinical_factors : List[str], optional
-            List of clinical factors to consider
-        group_by : List[str], optional
-            Columns to group the analysis by
+        Args:
+            measurement_column: Column containing the measurement to analyze
+            time_column: Column containing temporal information
+            clinical_factors: List of clinical factors to consider
+            group_by: Columns to group the analysis by
             
-        Returns
-        -------
-        pd.DataFrame
+        Returns:
             DataFrame containing frequency analysis results
         """
-        if group_by:
-            grouped = self.data.groupby(group_by)
-        else:
-            grouped = self.data
+        start_time = time.time()
+        
+        try:
+            if group_by:
+                grouped = self.data.groupby(group_by)
+            else:
+                grouped = self.data
+                
+            # Calculate basic frequency metrics
+            results = grouped[measurement_column].agg(['count', 'mean', 'std'])
             
-        # Calculate basic frequency metrics
-        results = grouped[measurement_column].agg(['count', 'mean', 'std'])
-        
-        # Calculate time-based metrics
-        time_span = (self.data[time_column].max() - 
-                    self.data[time_column].min()).days
-        results['frequency_per_day'] = results['count'] / time_span
-        
-        # Adjust for clinical factors if provided
-        if clinical_factors:
-            adjusted_frequencies = self._adjust_for_clinical_factors(
-                measurement_column,
-                clinical_factors,
-                group_by
+            # Calculate time-based metrics
+            time_span = (self.data[time_column].max() - 
+                        self.data[time_column].min()).days
+            results['frequency_per_day'] = results['count'] / time_span
+            
+            # Adjust for clinical factors if provided
+            if clinical_factors:
+                adjusted_frequencies = self._adjust_for_clinical_factors(
+                    measurement_column,
+                    clinical_factors,
+                    group_by
+                )
+                results['adjusted_frequency'] = adjusted_frequencies
+                
+            # Record processing metrics
+            processing_time = time.time() - start_time
+            self.monitor.record_processing(
+                processing_time=processing_time,
+                batch_size=len(self.data)
             )
-            results['adjusted_frequency'] = adjusted_frequencies
             
-        return results
-    
+            # Log analysis results
+            self.monitor.logger.info(
+                f"Completed frequency analysis for {measurement_column} "
+                f"in {processing_time:.2f} seconds"
+            )
+            
+            return results
+            
+        except Exception as e:
+            error_msg = f"Error analyzing measurement frequency: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise
+            
     def _adjust_for_clinical_factors(self,
                                    measurement_column: str,
                                    clinical_factors: List[str],
                                    group_by: Optional[List[str]] = None) -> pd.Series:
-        """
-        Adjust measurement frequencies for clinical factors.
+        """Adjust measurements for clinical factors.
         
-        Parameters
-        ----------
-        measurement_column : str
-            Column containing the measurement to analyze
-        clinical_factors : List[str]
-            List of clinical factors to consider
-        group_by : List[str], optional
-            Columns to group the analysis by
+        Args:
+            measurement_column: Column containing measurements to adjust
+            clinical_factors: List of clinical factors to adjust for
+            group_by: Columns to group the adjustment by
             
-        Returns
-        -------
-        pd.Series
-            Adjusted measurement frequencies
+        Returns:
+            Series containing adjusted measurements
         """
-        # Create regression model
-        X = self.data[clinical_factors]
-        y = self.data[measurement_column]
-        
-        # Fit linear regression
-        model = stats.linregress(X, y)
-        
-        # Calculate residuals (unexplained variation)
-        predicted = model.predict(X)
-        residuals = y - predicted
-        
-        return residuals
-    
-    def identify_pattern_correlations(self,
-                                   pattern_columns: List[str],
-                                   clinical_factors: Optional[List[str]] = None) -> pd.DataFrame:
-        """
-        Identify correlations between different care patterns and clinical factors.
-        Helps understand which variations can be explained by clinical factors.
-        
-        Parameters
-        ----------
-        pattern_columns : List[str]
-            Columns containing care patterns to analyze
-        clinical_factors : List[str], optional
-            Columns containing clinical factors to consider
+        try:
+            # Prepare data for adjustment
+            X = self.data[clinical_factors]
+            y = self.data[measurement_column]
             
-        Returns
-        -------
-        pd.DataFrame
-            Correlation matrix between patterns and factors
-        """
-        columns_to_analyze = pattern_columns.copy()
-        if clinical_factors:
-            columns_to_analyze.extend(clinical_factors)
+            # Fit linear model
+            from sklearn.linear_model import LinearRegression
+            model = LinearRegression()
+            model.fit(X, y)
             
-        return self.data[columns_to_analyze].corr()
-    
-    def visualize_pattern_distribution(self,
-                                     pattern_column: str,
-                                     phenotype_column: Optional[str] = None,
-                                     clinical_factor: Optional[str] = None,
-                                     time_column: Optional[str] = None) -> None:
-        """
-        Visualize the distribution of care patterns across phenotypes or clinical factors.
-        Includes temporal analysis if time information is provided.
-        
-        Parameters
-        ----------
-        pattern_column : str
-            Column containing the care pattern to visualize
-        phenotype_column : str, optional
-            Column containing phenotype labels
-        clinical_factor : str, optional
-            Column containing clinical factor to consider
-        time_column : str, optional
-            Column containing temporal information
-        """
-        plt.figure(figsize=(12, 6))
-        
-        if time_column:
-            # Create time series plot
-            plt.subplot(1, 2, 1)
-            if phenotype_column:
-                for phenotype in self.data[phenotype_column].unique():
-                    mask = self.data[phenotype_column] == phenotype
-                    plt.plot(self.data.loc[mask, time_column],
-                            self.data.loc[mask, pattern_column],
-                            label=f'Phenotype {phenotype}')
-                plt.title(f'Time Series of {pattern_column} by Phenotype')
-            else:
-                plt.plot(self.data[time_column], self.data[pattern_column])
-                plt.title(f'Time Series of {pattern_column}')
-                
-            plt.xlabel('Time')
-            plt.ylabel(pattern_column)
+            # Calculate residuals (unexplained variation)
+            residuals = y - model.predict(X)
             
-            # Create distribution plot
-            plt.subplot(1, 2, 2)
-            
-        if phenotype_column:
-            sns.boxplot(x=phenotype_column, y=pattern_column, data=self.data)
-            plt.title(f'Distribution of {pattern_column} across Phenotypes')
-        elif clinical_factor:
-            sns.boxplot(x=clinical_factor, y=pattern_column, data=self.data)
-            plt.title(f'Distribution of {pattern_column} across {clinical_factor}')
-        else:
-            sns.histplot(data=self.data, x=pattern_column)
-            plt.title(f'Distribution of {pattern_column}')
-            
-        plt.tight_layout()
-        plt.show()
-    
-    def analyze_temporal_patterns(self,
-                                pattern_column: str,
-                                time_column: str,
-                                phenotype_column: Optional[str] = None,
-                                clinical_factors: Optional[List[str]] = None) -> Dict:
-        """
-        Analyze temporal patterns in care delivery.
-        Accounts for clinical factors that may influence temporal patterns.
-        
-        Parameters
-        ----------
-        pattern_column : str
-            Column containing the care pattern to analyze
-        time_column : str
-            Column containing temporal information
-        phenotype_column : str, optional
-            Column containing phenotype labels
-        clinical_factors : List[str], optional
-            List of clinical factors to consider
-            
-        Returns
-        -------
-        Dict
-            Dictionary containing temporal analysis results
-        """
-        results = {}
-        
-        # Convert time column to datetime if needed
-        if not pd.api.types.is_datetime64_any_dtype(self.data[time_column]):
-            self.data[time_column] = pd.to_datetime(self.data[time_column])
-            
-        # Calculate time-based metrics
-        results['time_span'] = (self.data[time_column].max() - 
-                              self.data[time_column].min()).days
-        results['pattern_frequency'] = len(self.data) / results['time_span']
-        
-        if phenotype_column:
-            # Analyze patterns by phenotype
-            phenotype_patterns = self.data.groupby(phenotype_column).apply(
-                lambda x: len(x) / (x[time_column].max() - x[time_column].min()).days
+            # Log adjustment results
+            self.monitor.logger.info(
+                f"Adjusted measurements for {len(clinical_factors)} clinical factors. "
+                f"R-squared: {model.score(X, y):.3f}"
             )
-            results['phenotype_patterns'] = phenotype_patterns
             
-        if clinical_factors:
-            # Analyze relationship with clinical factors
-            for factor in clinical_factors:
-                correlation = stats.pearsonr(
-                    self.data[factor],
-                    self.data.groupby(time_column)[pattern_column].count()
-                )
-                results[f'{factor}_correlation'] = {
-                    'correlation': correlation[0],
-                    'p_value': correlation[1]
-                }
+            return residuals
             
-        return results 
-    
+        except Exception as e:
+            error_msg = f"Error adjusting for clinical factors: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise
+            
     def visualize_clinical_separation(self,
                                     phenotype_labels: pd.Series,
-                                    clinical_factors: List[str],
+                                    clinical_factors: Optional[List[str]] = None,
                                     output_file: Optional[str] = None) -> None:
-        """
-        Visualize clinical separation across phenotypes.
+        """Visualize clinical separation across phenotypes.
         
-        Parameters
-        ----------
-        phenotype_labels : pd.Series
-            Series containing phenotype labels
-        clinical_factors : List[str]
-            List of clinical factors to visualize
-        output_file : str, optional
-            Path to save the visualization
+        Args:
+            phenotype_labels: Series containing phenotype labels
+            clinical_factors: List of clinical factors to visualize
+            output_file: Optional path to save the visualization
         """
-        n_factors = len(clinical_factors)
-        n_phenotypes = len(phenotype_labels.unique())
-        
-        # Create subplot grid
-        fig, axes = plt.subplots(n_factors, 1, figsize=(12, 4*n_factors))
-        if n_factors == 1:
-            axes = [axes]
+        try:
+            if clinical_factors is None:
+                clinical_factors = self.clinical_factors
+                
+            if not clinical_factors:
+                warning_msg = "No clinical factors provided for visualization"
+                self.monitor.record_warning(warning_msg)
+                return
+                
+            # Create subplots for each clinical factor
+            n_factors = len(clinical_factors)
+            fig, axes = plt.subplots(n_factors, 1, figsize=(10, 4*n_factors))
             
-        for idx, factor in enumerate(clinical_factors):
-            # Create violin plot
-            sns.violinplot(x=phenotype_labels, y=self.data[factor], ax=axes[idx])
-            axes[idx].set_title(f'Distribution of {factor} across Phenotypes')
-            axes[idx].set_xlabel('Phenotype')
-            axes[idx].set_ylabel(factor)
-            
-            # Add statistical significance annotations
-            for i in range(n_phenotypes):
-                for j in range(i+1, n_phenotypes):
-                    # Perform t-test between phenotypes
-                    t_stat, p_value = stats.ttest_ind(
-                        self.data.loc[phenotype_labels == i, factor],
-                        self.data.loc[phenotype_labels == j, factor]
-                    )
-                    
-                    if p_value < 0.05:
-                        # Add significance annotation
-                        y_max = self.data[factor].max()
-                        axes[idx].annotate(
-                            f'p={p_value:.3f}',
-                            xy=((i+j)/2, y_max),
-                            xytext=(0, 5),
-                            textcoords='offset points',
-                            ha='center',
-                            va='bottom'
+            for i, factor in enumerate(clinical_factors):
+                # Create violin plot
+                sns.violinplot(
+                    data=self.data,
+                    x=phenotype_labels,
+                    y=factor,
+                    ax=axes[i] if n_factors > 1 else axes
+                )
+                
+                # Add statistical significance
+                for j in range(len(phenotype_labels.unique())):
+                    for k in range(j+1, len(phenotype_labels.unique())):
+                        stat, pval = stats.ttest_ind(
+                            self.data[phenotype_labels == j][factor],
+                            self.data[phenotype_labels == k][factor]
                         )
-        
-        plt.tight_layout()
-        
-        if output_file:
-            plt.savefig(output_file)
-        else:
-            plt.show()
+                        if pval < 0.05:
+                            axes[i].text(
+                                (j + k) / 2,
+                                self.data[factor].max(),
+                                f"p={pval:.3f}",
+                                ha='center'
+                            )
+                            
+                axes[i].set_title(f"Clinical Separation: {factor}")
+                
+            plt.tight_layout()
+            
+            # Save or display the plot
+            if output_file:
+                plt.savefig(output_file)
+                self.monitor.logger.info(f"Saved clinical separation plot to {output_file}")
+            else:
+                plt.show()
+                
+            plt.close()
+            
+        except Exception as e:
+            error_msg = f"Error visualizing clinical separation: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise
             
     def visualize_unexplained_variation(self,
                                       phenotype_labels: pd.Series,
                                       care_patterns: List[str],
-                                      clinical_factors: List[str],
+                                      clinical_factors: Optional[List[str]] = None,
                                       output_file: Optional[str] = None) -> None:
-        """
-        Visualize unexplained variation in care patterns across phenotypes.
+        """Visualize unexplained variation in care patterns.
         
-        Parameters
-        ----------
-        phenotype_labels : pd.Series
-            Series containing phenotype labels
-        care_patterns : List[str]
-            List of care patterns to analyze
-        clinical_factors : List[str]
-            List of clinical factors to consider
-        output_file : str, optional
-            Path to save the visualization
+        Args:
+            phenotype_labels: Series containing phenotype labels
+            care_patterns: List of care pattern columns to analyze
+            clinical_factors: List of clinical factors to consider
+            output_file: Optional path to save the visualization
         """
-        n_patterns = len(care_patterns)
-        n_phenotypes = len(phenotype_labels.unique())
-        
-        # Create subplot grid
-        fig, axes = plt.subplots(n_patterns, 1, figsize=(12, 4*n_patterns))
-        if n_patterns == 1:
-            axes = [axes]
-            
-        for idx, pattern in enumerate(care_patterns):
+        try:
+            if clinical_factors is None:
+                clinical_factors = self.clinical_factors
+                
             # Calculate explained and unexplained variation
-            explained_var = []
-            unexplained_var = []
+            total_var = self.data[care_patterns].var()
             
-            for phenotype in phenotype_labels.unique():
-                mask = phenotype_labels == phenotype
-                pattern_data = self.data.loc[mask, pattern]
-                clinical_data = self.data.loc[mask, clinical_factors]
+            if clinical_factors:
+                clinical_data = self.data[clinical_factors]
+                explained_var = clinical_data.var()
+                unexplained_var = total_var - explained_var
+            else:
+                unexplained_var = total_var
+                explained_var = pd.Series(0, index=care_patterns)
                 
-                # Fit regression model
-                model = stats.linregress(clinical_data, pattern_data)
-                predicted = model.predict(clinical_data)
-                
-                # Calculate variances
-                total_var = np.var(pattern_data)
-                explained = np.var(predicted)
-                unexplained = total_var - explained
-                
-                explained_var.append(explained)
-                unexplained_var.append(unexplained)
-            
             # Create stacked bar plot
-            x = np.arange(n_phenotypes)
+            plt.figure(figsize=(12, 6))
+            
+            x = np.arange(len(care_patterns))
             width = 0.35
             
-            axes[idx].bar(x, explained_var, width, label='Explained', color='lightblue')
-            axes[idx].bar(x, unexplained_var, width, bottom=explained_var, label='Unexplained', color='lightcoral')
+            plt.bar(x, explained_var, width, label='Explained', color='lightblue')
+            plt.bar(x, unexplained_var, width, bottom=explained_var, label='Unexplained', color='lightcoral')
             
-            axes[idx].set_title(f'Variation in {pattern} across Phenotypes')
-            axes[idx].set_xlabel('Phenotype')
-            axes[idx].set_ylabel('Variance')
-            axes[idx].legend()
+            plt.xlabel('Care Patterns')
+            plt.ylabel('Variance')
+            plt.title('Explained vs. Unexplained Variation in Care Patterns')
+            plt.xticks(x, care_patterns, rotation=45)
+            plt.legend()
             
             # Add percentage annotations
-            for i in range(n_phenotypes):
-                total = explained_var[i] + unexplained_var[i]
-                unexplained_pct = unexplained_var[i] / total * 100
-                axes[idx].annotate(
-                    f'{unexplained_pct:.1f}%',
-                    xy=(i, total),
-                    xytext=(0, 5),
-                    textcoords='offset points',
-                    ha='center',
-                    va='bottom'
-                )
-        
-        plt.tight_layout()
-        
-        if output_file:
-            plt.savefig(output_file)
-        else:
-            plt.show()
+            for i, pattern in enumerate(care_patterns):
+                total = explained_var[pattern] + unexplained_var[pattern]
+                explained_pct = (explained_var[pattern] / total) * 100
+                unexplained_pct = (unexplained_var[pattern] / total) * 100
+                
+                plt.text(i, total/2, f'{explained_pct:.1f}%', ha='center')
+                plt.text(i, total*0.75, f'{unexplained_pct:.1f}%', ha='center')
+                
+            plt.tight_layout()
+            
+            # Save or display the plot
+            if output_file:
+                plt.savefig(output_file)
+                self.monitor.logger.info(f"Saved unexplained variation plot to {output_file}")
+            else:
+                plt.show()
+                
+            plt.close()
+            
+        except Exception as e:
+            error_msg = f"Error visualizing unexplained variation: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise
             
     def visualize_variation_trends(self,
                                  phenotype_labels: pd.Series,
                                  care_patterns: List[str],
-                                 clinical_factors: List[str],
-                                 time_column: str,
+                                 clinical_factors: Optional[List[str]] = None,
+                                 time_column: str = 'timestamp',
                                  output_file: Optional[str] = None) -> None:
-        """
-        Visualize trends in explained and unexplained variation over time.
+        """Visualize trends in explained and unexplained variation over time.
         
-        Parameters
-        ----------
-        phenotype_labels : pd.Series
-            Series containing phenotype labels
-        care_patterns : List[str]
-            List of care patterns to analyze
-        clinical_factors : List[str]
-            List of clinical factors to consider
-        time_column : str
-            Column containing temporal information
-        output_file : str, optional
-            Path to save the visualization
+        Args:
+            phenotype_labels: Series containing phenotype labels
+            care_patterns: List of care pattern columns to analyze
+            clinical_factors: List of clinical factors to consider
+            time_column: Column containing temporal information
+            output_file: Optional path to save the visualization
         """
-        n_patterns = len(care_patterns)
-        
-        # Create subplot grid
-        fig, axes = plt.subplots(n_patterns, 1, figsize=(12, 4*n_patterns))
-        if n_patterns == 1:
-            axes = [axes]
-            
-        for idx, pattern in enumerate(care_patterns):
-            # Calculate variation over time
-            time_points = sorted(self.data[time_column].unique())
-            explained_trend = []
-            unexplained_trend = []
-            
-            for time_point in time_points:
-                mask = self.data[time_column] == time_point
-                pattern_data = self.data.loc[mask, pattern]
-                clinical_data = self.data.loc[mask, clinical_factors]
+        try:
+            if clinical_factors is None:
+                clinical_factors = self.clinical_factors
                 
-                if len(pattern_data) > 0:
-                    # Fit regression model
-                    model = stats.linregress(clinical_data, pattern_data)
-                    predicted = model.predict(clinical_data)
-                    
-                    # Calculate variances
-                    total_var = np.var(pattern_data)
-                    explained = np.var(predicted)
-                    unexplained = total_var - explained
-                    
-                    explained_trend.append(explained)
-                    unexplained_trend.append(unexplained)
+            # Sort data by time
+            data_sorted = self.data.sort_values(time_column)
             
+            # Calculate variation over time
+            window_size = len(data_sorted) // 10  # Use 10 time windows
+            explained_trends = []
+            unexplained_trends = []
+            time_points = []
+            
+            for i in range(0, len(data_sorted), window_size):
+                window_data = data_sorted.iloc[i:i+window_size]
+                
+                # Calculate variation for the window
+                total_var = window_data[care_patterns].var()
+                
+                if clinical_factors:
+                    clinical_data = window_data[clinical_factors]
+                    explained_var = clinical_data.var()
+                    unexplained_var = total_var - explained_var
+                else:
+                    unexplained_var = total_var
+                    explained_var = pd.Series(0, index=care_patterns)
+                    
+                explained_trends.append(explained_var.mean())
+                unexplained_trends.append(unexplained_var.mean())
+                time_points.append(window_data[time_column].iloc[0])
+                
             # Create line plot
-            axes[idx].plot(time_points, explained_trend, label='Explained', color='lightblue')
-            axes[idx].plot(time_points, unexplained_trend, label='Unexplained', color='lightcoral')
+            plt.figure(figsize=(12, 6))
             
-            axes[idx].set_title(f'Variation Trends in {pattern} over Time')
-            axes[idx].set_xlabel('Time')
-            axes[idx].set_ylabel('Variance')
-            axes[idx].legend()
+            plt.plot(time_points, explained_trends, label='Explained', color='lightblue')
+            plt.plot(time_points, unexplained_trends, label='Unexplained', color='lightcoral')
+            
+            plt.xlabel('Time')
+            plt.ylabel('Average Variance')
+            plt.title('Trends in Explained vs. Unexplained Variation')
+            plt.legend()
             
             # Add percentage annotations at key points
             for i in [0, len(time_points)-1]:
-                total = explained_trend[i] + unexplained_trend[i]
-                unexplained_pct = unexplained_trend[i] / total * 100
-                axes[idx].annotate(
-                    f'{unexplained_pct:.1f}%',
-                    xy=(time_points[i], total),
-                    xytext=(0, 5),
-                    textcoords='offset points',
-                    ha='center',
-                    va='bottom'
-                )
-        
-        plt.tight_layout()
-        
-        if output_file:
-            plt.savefig(output_file)
-        else:
-            plt.show() 
+                total = explained_trends[i] + unexplained_trends[i]
+                explained_pct = (explained_trends[i] / total) * 100
+                unexplained_pct = (unexplained_trends[i] / total) * 100
+                
+                plt.text(time_points[i], total/2, f'{explained_pct:.1f}%', ha='center')
+                plt.text(time_points[i], total*0.75, f'{unexplained_pct:.1f}%', ha='center')
+                
+            plt.tight_layout()
+            
+            # Save or display the plot
+            if output_file:
+                plt.savefig(output_file)
+                self.monitor.logger.info(f"Saved variation trends plot to {output_file}")
+            else:
+                plt.show()
+                
+            plt.close()
+            
+        except Exception as e:
+            error_msg = f"Error visualizing variation trends: {str(e)}"
+            self.monitor.record_error(error_msg)
+            raise
+            
+    def __del__(self):
+        """Cleanup when the object is destroyed."""
+        if hasattr(self, 'monitor'):
+            self.monitor.stop_monitoring() 
