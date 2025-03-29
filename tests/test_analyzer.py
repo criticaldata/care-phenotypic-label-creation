@@ -257,4 +257,84 @@ def test_visualize_variation_trends(sample_data, phenotype_labels):
         time_column='timestamp',
         output_file='test_trends.png'
     )
-    plt.close() 
+    plt.close()
+
+def test_fairness_visualization(sample_data, sample_predictions):
+    """Test fairness metrics visualization."""
+    evaluator = FairnessEvaluator(
+        predictions=sample_predictions,
+        true_labels=pd.Series(np.random.binomial(1, 0.3, len(sample_data))),
+        phenotype_labels=pd.Series(np.random.randint(0, 3, len(sample_data))),
+        clinical_factors=sample_data[['sofa_score', 'charlson_score']]
+    )
+    
+    # Test fairness metrics visualization
+    evaluator.visualize_fairness_metrics(
+        metrics=['demographic_parity', 'equal_opportunity'],
+        output_file='test_fairness.png'
+    )
+    plt.close()
+    
+    # Test bias detection visualization
+    evaluator.visualize_bias_detection(output_file='test_bias.png')
+    plt.close()
+
+def test_bias_mitigation(sample_data, sample_predictions):
+    """Test bias mitigation strategies."""
+    evaluator = FairnessEvaluator(
+        predictions=sample_predictions,
+        true_labels=pd.Series(np.random.binomial(1, 0.3, len(sample_data))),
+        phenotype_labels=pd.Series(np.random.randint(0, 3, len(sample_data))),
+        clinical_factors=sample_data[['sofa_score', 'charlson_score']]
+    )
+    
+    # Test reweighting strategy
+    reweighted_predictions = evaluator.mitigate_bias(strategy='reweighting')
+    assert len(reweighted_predictions) == len(sample_data)
+    assert all(0 <= p <= 1 for p in reweighted_predictions)
+    
+    # Test threshold adjustment strategy
+    threshold_predictions = evaluator.mitigate_bias(strategy='threshold_adjustment')
+    assert len(threshold_predictions) == len(sample_data)
+    assert all(p in [0, 1] for p in threshold_predictions)
+    
+    # Test calibration strategy
+    calibrated_predictions = evaluator.mitigate_bias(strategy='calibration')
+    assert len(calibrated_predictions) == len(sample_data)
+    assert all(0 <= p <= 1 for p in calibrated_predictions)
+    
+    # Test bias mitigation visualization
+    evaluator.visualize_bias_mitigation(
+        strategies=['reweighting', 'threshold_adjustment', 'calibration'],
+        output_file='test_mitigation.png'
+    )
+    plt.close()
+
+def test_bias_mitigation_validation(sample_data, sample_predictions):
+    """Test validation of bias mitigation results."""
+    evaluator = FairnessEvaluator(
+        predictions=sample_predictions,
+        true_labels=pd.Series(np.random.binomial(1, 0.3, len(sample_data))),
+        phenotype_labels=pd.Series(np.random.randint(0, 3, len(sample_data))),
+        clinical_factors=sample_data[['sofa_score', 'charlson_score']]
+    )
+    
+    # Get original fairness metrics
+    original_metrics = evaluator.evaluate_fairness_metrics(['demographic_parity'])
+    
+    # Apply each mitigation strategy
+    strategies = ['reweighting', 'threshold_adjustment', 'calibration']
+    for strategy in strategies:
+        mitigated_predictions = evaluator.mitigate_bias(strategy)
+        
+        # Temporarily replace predictions to calculate metrics
+        original_predictions = evaluator.predictions
+        evaluator.predictions = mitigated_predictions
+        mitigated_metrics = evaluator.evaluate_fairness_metrics(['demographic_parity'])
+        evaluator.predictions = original_predictions
+        
+        # Validate that mitigation improved fairness
+        original_variance = np.var([m['positive_rate'] for m in original_metrics['demographic_parity'].values()])
+        mitigated_variance = np.var([m['positive_rate'] for m in mitigated_metrics['demographic_parity'].values()])
+        assert mitigated_variance <= original_variance, \
+            f"{strategy} mitigation did not improve fairness" 
