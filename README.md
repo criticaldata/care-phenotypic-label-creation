@@ -5,6 +5,7 @@ A Python package for creating objective care phenotype labels based on observabl
 ## Overview
 
 This package implements a novel approach to understanding healthcare disparities by:
+
 - Creating objective care phenotype labels based on observable care patterns
 - Moving beyond traditional demographic labels for fairness evaluation
 - Focusing on easily measurable care metrics (e.g., lab test frequency, routine care procedures)
@@ -23,8 +24,18 @@ This package implements a novel approach to understanding healthcare disparities
 
 ## Installation
 
+The package is available on PyPI:
+
 ```bash
 pip install care-phenotype-analyzer
+```
+
+You can also install the development version directly from the repository:
+
+```bash
+git clone https://github.com/MIT-LCP/care-phenotypic-label-creation.git
+cd care-phenotypic-label-creation
+pip install -e .
 ```
 
 ## Usage
@@ -87,14 +98,16 @@ pattern_analyzer.visualize_clinical_separation(
 ## Examples
 
 Check out the `examples/` directory for detailed examples:
+
 - `lab_test_analysis_example.py`: Complete workflow for analyzing lab test patterns
-- More examples coming soon
+- Documentation in the examples/README.md file
 
 ## Project Structure
 
 ```
 care-phenotypic-label-creation/
 ├── care_phenotype_analyzer/      # Main package directory
+│   ├── __init__.py               # Package initialization and version info
 │   ├── phenotype_creator.py      # Creates care phenotype labels
 │   ├── pattern_analyzer.py       # Analyzes care patterns
 │   ├── fairness_evaluator.py     # Evaluates fairness
@@ -108,35 +121,103 @@ care-phenotypic-label-creation/
 │   └── mimic/                    # MIMIC database specific modules
 ├── tests/                        # Comprehensive test suite
 │   ├── test_analyzer.py          # Core analyzer tests
-│   ├── test_performance.py       # Performance tests
+│   ├── test_caching.py           # Caching tests
+│   ├── test_clinical_score_validation.py
+│   ├── test_dashboard.py
+│   ├── test_data_processing_validation.py
+│   ├── test_export.py
+│   ├── test_integration.py       # Integration tests
+│   ├── test_large_dataset_handling.py
 │   ├── test_memory.py            # Memory optimization tests
-│   └── [many more test files]    # Additional test modules
+│   ├── test_memory_optimization.py
+│   ├── test_monitoring.py
+│   ├── test_parallel.py
+│   ├── test_performance.py       # Performance tests
+│   ├── test_processing_speed.py
+│   ├── test_result_validation.py
+│   ├── test_synthetic_data.py
+│   └── test_visualization.py
 ├── examples/                     # Example scripts
 │   ├── lab_test_analysis_example.py
 │   └── README.md
-└── docs/                         # Documentation
-    └── manuscript/               # Project manuscript
+├── docs/                         # Documentation
+│   ├── API.md                    # API documentation
+│   ├── ARCHITECTURE.md           # Architecture details
+│   ├── DEPLOYMENT.md             # Deployment guide
+│   └── manuscript/               # Project manuscript
+├── setup.py                      # Package setup configuration
+├── requirements.txt              # Development dependencies
+├── LICENSE                       # MIT License
+├── CONTRIBUTING.md               # Contribution guidelines
+└── README.md                     # This file
 ```
+
+## Documentation
+
+The package documentation is available in the `docs/` directory:
+
+- `API.md`: Detailed API documentation for all modules
+- `ARCHITECTURE.md`: System architecture and design principles
+- `DEPLOYMENT.md`: Deployment and integration guide
 
 ## Development
 
-1. Clone the repository
+### Prerequisites
+
+- Python 3.8+
+- Git
+
+### Setting Up Development Environment
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/MIT-LCP/care-phenotypic-label-creation.git
+   cd care-phenotypic-label-creation
+   ```
 2. Install development dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
-3. Run tests:
+3. Install the package in development mode:
+
    ```bash
-   pytest
+   pip install -e .
    ```
+
+### Running Tests
+
+Run the full test suite:
+
+```bash
+pytest
+```
+
+Run specific test files:
+
+```bash
+pytest tests/test_analyzer.py
+```
+
+### Continuous Integration/Deployment
+
+The project uses GitHub Actions for CI/CD:
+
+- CI: Automated testing on pull requests
+- CD: Automatic packaging and publishing to PyPI on version tags
 
 ## Contributing
 
-We welcome contributions! Please see our contributing guidelines for more details.
+We welcome contributions! Please see our [contributing guidelines](CONTRIBUTING.md) for more details on:
+
+- Code style and standards
+- Pull request process
+- Issue reporting
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Citation
 
@@ -147,6 +228,7 @@ If you use this package in your research, please cite:
   title = {Care Phenotype Analyzer: A Tool for Objective Healthcare Fairness Evaluation},
   author = {MIT Critical Data},
   year = {2024},
+  version = {0.1.0},
   publisher = {GitHub},
   url = {https://github.com/MIT-LCP/care-phenotypic-label-creation}
 }
