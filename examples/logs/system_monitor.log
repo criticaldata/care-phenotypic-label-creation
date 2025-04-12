@@ -1,0 +1,307 @@
+2025-04-12 11:58:18,755 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 11:58:18,756 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 11:58:30,827 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 11:58:30,827 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:00:23,935 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:00:23,935 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:00:23,938 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:00:23,947 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:00:24,200 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 373, 1: 324, 2: 303}
+2025-04-12 12:00:24,200 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:00:24,200 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.26 seconds
+2025-04-12 12:00:24,216 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:00:24,216 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:00:24,216 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:00:24,216 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:00:24,228 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:00:24,228 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:00:24,229 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:00:24,229 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:00:24,769 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:00:24,769 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:00:24,770 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:00:24,770 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:00:24,769 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:00:24,770 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:00:24,771 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:00:24,771 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:00:24,771 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:00:24,772 - SystemMonitor - ERROR - Error adjusting for clinical factors: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 2 and the array at index 1 has size 1000
+2025-04-12 12:00:24,772 - SystemMonitor - ERROR - Error adjusting for clinical factors: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 2 and the array at index 1 has size 1000
+2025-04-12 12:00:24,772 - SystemMonitor - ERROR - Error adjusting for clinical factors: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 2 and the array at index 1 has size 1000
+2025-04-12 12:00:24,774 - SystemMonitor - ERROR - Error evaluating fairness metrics: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 2 and the array at index 1 has size 1000
+2025-04-12 12:00:24,774 - SystemMonitor - ERROR - Error evaluating fairness metrics: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 2 and the array at index 1 has size 1000
+2025-04-12 12:00:24,774 - SystemMonitor - ERROR - Error evaluating fairness metrics: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 2 and the array at index 1 has size 1000
+2025-04-12 12:03:07,546 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:03:07,547 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:03:07,548 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:03:07,550 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:03:07,806 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 373, 1: 324, 2: 303}
+2025-04-12 12:03:07,807 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:03:07,807 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.26 seconds
+2025-04-12 12:03:07,821 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:03:07,822 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:03:07,821 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:03:07,822 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:03:07,827 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:03:07,827 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:03:07,827 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.00 seconds
+2025-04-12 12:03:07,827 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.00 seconds
+2025-04-12 12:03:08,298 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:03:08,298 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:03:08,298 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'records_processed'
+2025-04-12 12:03:08,299 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:03:08,299 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:03:08,299 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:03:08,300 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:03:08,300 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:03:08,300 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:03:08,303 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:03:08,303 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:03:08,303 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:03:08,305 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:03:08,305 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:03:08,305 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:03:08,305 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:03:08,305 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:03:08,305 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:03:08,306 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:03:08,306 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:03:08,306 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:03:08,306 - SystemMonitor - ERROR - Error calculating care pattern disparity: 'FairnessEvaluator' object has no attribute 'data'
+2025-04-12 12:03:08,306 - SystemMonitor - ERROR - Error calculating care pattern disparity: 'FairnessEvaluator' object has no attribute 'data'
+2025-04-12 12:03:08,306 - SystemMonitor - ERROR - Error calculating care pattern disparity: 'FairnessEvaluator' object has no attribute 'data'
+2025-04-12 12:03:08,307 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'FairnessEvaluator' object has no attribute 'data'
+2025-04-12 12:03:08,307 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'FairnessEvaluator' object has no attribute 'data'
+2025-04-12 12:03:08,307 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'FairnessEvaluator' object has no attribute 'data'
+2025-04-12 12:04:40,388 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'error_count'
+2025-04-12 12:04:40,389 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:04:40,389 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:04:40,394 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:04:40,604 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 373, 1: 324, 2: 303}
+2025-04-12 12:04:40,605 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:04:40,605 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.22 seconds
+2025-04-12 12:04:40,621 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'error_count'
+2025-04-12 12:04:40,621 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'error_count'
+2025-04-12 12:04:40,622 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:04:40,622 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:04:40,629 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:04:40,629 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:04:40,630 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:04:40,630 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:04:41,103 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'error_count'
+2025-04-12 12:04:41,103 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'error_count'
+2025-04-12 12:04:41,103 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:04:41,103 - SystemMonitor - ERROR - Error collecting metrics: 'SystemMonitor' object has no attribute 'error_count'
+2025-04-12 12:04:41,103 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:04:41,103 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 0 demographic factors, and 1000 clinical factors
+2025-04-12 12:04:41,104 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:04:41,104 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:04:41,104 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:04:41,108 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:04:41,108 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:04:41,108 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:04:41,108 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:04:41,108 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:04:41,108 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:04:41,109 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:04:41,109 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:04:41,109 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:04:41,109 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:04:41,109 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:04:41,109 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:04:41,112 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.01 seconds
+2025-04-12 12:04:41,112 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.01 seconds
+2025-04-12 12:04:41,112 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.01 seconds
+2025-04-12 12:08:10,910 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:08:10,911 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:08:10,914 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:08:11,147 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 391, 2: 309, 1: 300}
+2025-04-12 12:08:11,148 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:08:11,148 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.24 seconds
+2025-04-12 12:08:11,164 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:08:11,164 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:08:11,168 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:08:11,168 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:08:11,169 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:08:11,169 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:08:11,725 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:08:11,725 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:08:11,725 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:08:11,725 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:08:11,725 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:08:11,725 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:08:11,729 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:08:11,729 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:08:11,729 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:08:11,729 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:08:11,729 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:08:11,729 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:08:11,730 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:08:11,730 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:08:11,730 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:08:11,731 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:08:11,731 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:08:11,731 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:08:33,064 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:08:33,065 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:08:33,068 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:08:33,253 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 391, 2: 309, 1: 300}
+2025-04-12 12:08:33,253 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:08:33,253 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.19 seconds
+2025-04-12 12:08:33,268 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:08:33,268 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:08:33,273 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:08:33,273 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:08:33,274 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:08:33,274 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:08:33,767 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:08:33,767 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:08:33,767 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:08:33,768 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:08:33,768 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:08:33,768 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:08:33,771 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:08:33,771 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:08:33,771 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:08:33,771 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:08:33,771 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:08:33,771 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:08:33,772 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:08:33,772 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:08:33,772 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:08:33,773 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:08:33,773 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:08:33,773 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:09:42,545 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:09:42,546 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:09:42,548 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:09:42,764 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 391, 2: 309, 1: 300}
+2025-04-12 12:09:42,764 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:09:42,765 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.22 seconds
+2025-04-12 12:09:42,780 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:09:42,780 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:09:42,785 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:09:42,785 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:09:42,787 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:09:42,787 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:09:43,350 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:09:43,350 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:09:43,350 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:09:43,353 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:09:43,353 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:09:43,353 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:09:43,357 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:09:43,357 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:09:43,357 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:09:43,357 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:09:43,357 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:09:43,357 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:09:43,359 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:09:43,359 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:09:43,359 - SystemMonitor - ERROR - Error calculating demographic parity: 'gender'
+2025-04-12 12:09:43,360 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:09:43,360 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:09:43,360 - SystemMonitor - ERROR - Error evaluating fairness metrics: 'gender'
+2025-04-12 12:11:14,180 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:11:14,180 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:11:14,184 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:11:14,416 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 391, 2: 309, 1: 300}
+2025-04-12 12:11:14,416 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:11:14,416 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.24 seconds
+2025-04-12 12:11:14,431 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:11:14,431 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:11:14,435 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:11:14,435 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:11:14,436 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:11:14,436 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:11:14,885 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:11:14,885 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:11:14,885 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:11:14,887 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:11:14,887 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:11:14,887 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:11:14,889 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:11:14,889 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:11:14,889 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:11:14,890 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:11:14,890 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:11:14,890 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:11:14,896 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:11:14,896 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:11:14,896 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:11:14,916 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:11:14,916 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:11:14,916 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:11:14,917 - SystemMonitor - ERROR - Error calculating care pattern disparity: Could not convert ['FFFMMFFFMFFMMMFMMFMMMFMFMMFMMFFFMMMMMFFMFFFFMFFMMFFMMFFFFFFMFMMFFMFMMFFFMMFFMFFFFFFFFFMFFMMMMMMMFMMFFFMFMMMFFMFMMFFMMMFFFFMMFFMFFMMFFFMFFFFFMFFMFMMMFMMMFMMFMMFFMMFMFFMFFFFFMFFFMMFMMMFFFMFMFFFFMMMMMFMMFMFMMMFMMFFFFMMFFFMMFMFMMFFMMFMMFFFMMFMFMMMMMMFMMFMFMFFMFMFMMMFFFFMMMMMFFFMFFFMFMFMMFMMMFFMFMFMMMMFMFMFMFFFFM'] to numeric
+2025-04-12 12:11:14,917 - SystemMonitor - ERROR - Error calculating care pattern disparity: Could not convert ['FFFMMFFFMFFMMMFMMFMMMFMFMMFMMFFFMMMMMFFMFFFFMFFMMFFMMFFFFFFMFMMFFMFMMFFFMMFFMFFFFFFFFFMFFMMMMMMMFMMFFFMFMMMFFMFMMFFMMMFFFFMMFFMFFMMFFFMFFFFFMFFMFMMMFMMMFMMFMMFFMMFMFFMFFFFFMFFFMMFMMMFFFMFMFFFFMMMMMFMMFMFMMMFMMFFFFMMFFFMMFMFMMFFMMFMMFFFMMFMFMMMMMMFMMFMFMFFMFMFMMMFFFFMMMMMFFFMFFFMFMFMMFMMMFFMFMFMMMMFMFMFMFFFFM'] to numeric
+2025-04-12 12:11:14,917 - SystemMonitor - ERROR - Error calculating care pattern disparity: Could not convert ['FFFMMFFFMFFMMMFMMFMMMFMFMMFMMFFFMMMMMFFMFFFFMFFMMFFMMFFFFFFMFMMFFMFMMFFFMMFFMFFFFFFFFFMFFMMMMMMMFMMFFFMFMMMFFMFMMFFMMMFFFFMMFFMFFMMFFFMFFFFFMFFMFMMMFMMMFMMFMMFFMMFMFFMFFFFFMFFFMMFMMMFFFMFMFFFFMMMMMFMMFMFMMMFMMFFFFMMFFFMMFMFMMFFMMFMMFFFMMFMFMMMMMMFMMFMFMFFMFMFMMMFFFFMMMMMFFFMFFFMFMFMMFMMMFFMFMFMMMMFMFMFMFFFFM'] to numeric
+2025-04-12 12:11:14,918 - SystemMonitor - ERROR - Error evaluating fairness metrics: Could not convert ['FFFMMFFFMFFMMMFMMFMMMFMFMMFMMFFFMMMMMFFMFFFFMFFMMFFMMFFFFFFMFMMFFMFMMFFFMMFFMFFFFFFFFFMFFMMMMMMMFMMFFFMFMMMFFMFMMFFMMMFFFFMMFFMFFMMFFFMFFFFFMFFMFMMMFMMMFMMFMMFFMMFMFFMFFFFFMFFFMMFMMMFFFMFMFFFFMMMMMFMMFMFMMMFMMFFFFMMFFFMMFMFMMFFMMFMMFFFMMFMFMMMMMMFMMFMFMFFMFMFMMMFFFFMMMMMFFFMFFFMFMFMMFMMMFFMFMFMMMMFMFMFMFFFFM'] to numeric
+2025-04-12 12:11:14,918 - SystemMonitor - ERROR - Error evaluating fairness metrics: Could not convert ['FFFMMFFFMFFMMMFMMFMMMFMFMMFMMFFFMMMMMFFMFFFFMFFMMFFMMFFFFFFMFMMFFMFMMFFFMMFFMFFFFFFFFFMFFMMMMMMMFMMFFFMFMMMFFMFMMFFMMMFFFFMMFFMFFMMFFFMFFFFFMFFMFMMMFMMMFMMFMMFFMMFMFFMFFFFFMFFFMMFMMMFFFMFMFFFFMMMMMFMMFMFMMMFMMFFFFMMFFFMMFMFMMFFMMFMMFFFMMFMFMMMMMMFMMFMFMFFMFMFMMMFFFFMMMMMFFFMFFFMFMFMMFMMMFFMFMFMMMMFMFMFMFFFFM'] to numeric
+2025-04-12 12:11:14,918 - SystemMonitor - ERROR - Error evaluating fairness metrics: Could not convert ['FFFMMFFFMFFMMMFMMFMMMFMFMMFMMFFFMMMMMFFMFFFFMFFMMFFMMFFFFFFMFMMFFMFMMFFFMMFFMFFFFFFFFFMFFMMMMMMMFMMFFFMFMMMFFMFMMFFMMMFFFFMMFFMFFMMFFFMFFFFFMFFMFMMMFMMMFMMFMMFFMMFMFFMFFFFFMFFFMMFMMMFFFMFMFFFFMMMMMFMMFMFMMMFMMFFFFMMFFFMMFMFMMFFMMFMMFFFMMFMFMMMMMMFMMFMFMFFMFMFMMMFFFFMMMMMFFFMFFFMFMFMMFMMMFFMFMFMMMMFMFMFMFFFFM'] to numeric
+2025-04-12 12:12:10,219 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:12:10,220 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:12:10,224 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:12:10,439 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 391, 2: 309, 1: 300}
+2025-04-12 12:12:10,439 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:12:10,440 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.22 seconds
+2025-04-12 12:12:10,455 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:12:10,455 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:12:10,460 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:12:10,460 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:12:10,461 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:12:10,461 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:12:10,972 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:12:10,972 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:12:10,972 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:12:10,974 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:12:10,974 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:12:10,974 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:12:10,977 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:12:10,977 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:12:10,977 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:12:10,978 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:12:10,978 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:12:10,978 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:12:10,982 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:12:10,982 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:12:10,982 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:12:11,004 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:12:11,004 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:12:11,004 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:12:11,017 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.04 seconds
+2025-04-12 12:12:11,017 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.04 seconds
+2025-04-12 12:12:11,017 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.04 seconds
+2025-04-12 12:18:25,301 - SystemMonitor - INFO - Initialized CarePhenotypeCreator with 1000 records and 2 clinical factors
+2025-04-12 12:18:25,301 - SystemMonitor - INFO - Starting data preprocessing
+2025-04-12 12:18:25,308 - SystemMonitor - INFO - Starting data clustering
+2025-04-12 12:18:25,517 - SystemMonitor - INFO - Clustering complete. Cluster sizes: {0: 391, 2: 309, 1: 300}
+2025-04-12 12:18:25,517 - SystemMonitor - INFO - Creating phenotype labels
+2025-04-12 12:18:25,517 - SystemMonitor - INFO - Successfully created phenotype labels for 1000 records in 0.22 seconds
+2025-04-12 12:18:25,532 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:18:25,532 - SystemMonitor - INFO - Initialized CarePatternAnalyzer with 1000 records and 0 clinical factors
+2025-04-12 12:18:25,536 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:18:25,536 - SystemMonitor - INFO - Adjusted measurements for 2 clinical factors. R-squared: 0.608
+2025-04-12 12:18:25,537 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:18:25,537 - SystemMonitor - INFO - Completed frequency analysis for lab_test_frequency in 0.01 seconds
+2025-04-12 12:18:25,946 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:18:25,946 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:18:25,946 - SystemMonitor - INFO - Initialized FairnessEvaluator with 1000 records, 3 demographic factors, and 1000 clinical factors
+2025-04-12 12:18:25,950 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:18:25,950 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:18:25,950 - SystemMonitor - INFO - Adjusting predictions for clinical factors
+2025-04-12 12:18:25,951 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:18:25,951 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:18:25,951 - SystemMonitor - INFO - Adjusted predictions for 2 clinical factors using multiple regression.
+2025-04-12 12:18:25,953 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:18:25,953 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:18:25,953 - SystemMonitor - INFO - Calculating demographic_parity metric
+2025-04-12 12:18:25,955 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:18:25,955 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:18:25,955 - SystemMonitor - INFO - Calculating equal_opportunity metric
+2025-04-12 12:18:25,977 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:18:25,977 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:18:25,977 - SystemMonitor - INFO - Calculating care_pattern_disparity metric
+2025-04-12 12:18:25,980 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.03 seconds
+2025-04-12 12:18:25,980 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.03 seconds
+2025-04-12 12:18:25,980 - SystemMonitor - INFO - Completed fairness evaluation for 3 metrics in 0.03 seconds

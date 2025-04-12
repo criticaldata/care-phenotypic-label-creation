@@ -26,6 +26,7 @@ class FairnessEvaluator:
                  phenotype_labels: pd.Series,
                  clinical_factors: Optional[pd.DataFrame] = None,
                  demographic_factors: Optional[List[str]] = None,
+                 demographic_data: Optional[pd.DataFrame] = None,
                  log_dir: str = "logs"):
         """
         Initialize the fairness evaluator.
@@ -42,6 +43,8 @@ class FairnessEvaluator:
             DataFrame containing clinical factors (e.g., SOFA score, Charlson score)
         demographic_factors : List[str], optional
             List of demographic factors to consider
+        demographic_data : pd.DataFrame, optional
+            DataFrame containing demographic data, should include columns listed in demographic_factors
         log_dir : str
             Directory for monitoring logs
         """
@@ -51,6 +54,28 @@ class FairnessEvaluator:
         self.clinical_factors = clinical_factors
         self.demographic_factors = demographic_factors or []
         
+        # Initialize data attribute for methods that need it
+        self.data = pd.DataFrame({
+            'predictions': predictions,
+            'true_labels': true_labels,
+            'phenotype_labels': phenotype_labels
+        })
+        
+        # Add clinical factors to data if provided
+        if clinical_factors is not None:
+            for col in clinical_factors.columns:
+                self.data[col] = clinical_factors[col]
+        
+        # Add demographic factors to data if provided
+        if demographic_data is not None and len(self.demographic_factors) > 0:
+            for factor in self.demographic_factors:
+                if factor in demographic_data.columns:
+                    self.data[factor] = demographic_data[factor]
+                else:
+                    warning_msg = f"Demographic factor '{factor}' not found in demographic_data"
+                    self.monitor = SystemMonitor(log_dir=log_dir)  # Ensure monitor exists before warning
+                    self.monitor.record_warning(warning_msg)
+        
         # Initialize monitoring system
         self.monitor = SystemMonitor(log_dir=log_dir)
         
@@ -58,7 +83,7 @@ class FairnessEvaluator:
         self.monitor.logger.info(
             f"Initialized FairnessEvaluator with {len(phenotype_labels)} records, "
             f"{len(self.demographic_factors)} demographic factors, and "
-            f"{len(self.clinical_factors)} clinical factors"
+            f"{len(self.clinical_factors) if self.clinical_factors is not None else 0} clinical factors"
         )
         
     def evaluate_fairness_metrics(self,
@@ -130,30 +155,48 @@ class FairnessEvaluator:
     
     def _adjust_for_clinical_factors(self) -> pd.Series:
         """
-        Adjust predictions for clinical factors to identify unexplained disparities.
+        Adjust predictions for clinical factors.
         
-        Returns
-        -------
-        pd.Series
-            Adjusted predictions
+        Returns:
+            Adjusted predictions (residuals)
         """
         try:
             # Create regression model
             X = self.clinical_factors
             y = self.predictions
             
-            # Fit linear regression
-            model = stats.linregress(X, y)
-            
-            # Calculate residuals (unexplained variation)
-            predicted = model.predict(X)
-            residuals = y - predicted
-            
-            # Log adjustment results
-            self.monitor.logger.info(
-                f"Adjusted predictions for {len(self.clinical_factors)} clinical factors. "
-                f"R-squared: {model.rvalue**2:.3f}"
-            )
+            # For multiple clinical factors, we need to use a more sophisticated regression approach
+            if isinstance(X, pd.DataFrame) and X.shape[1] > 1:
+                # Use sklearn's LinearRegression for multi-dimensional input
+                from sklearn.linear_model import LinearRegression
+                model = LinearRegression()
+                model.fit(X, y)
+                
+                # Calculate residuals (unexplained variation)
+                predicted = model.predict(X)
+                residuals = y - predicted
+                
+                # Log adjustment results
+                self.monitor.logger.info(
+                    f"Adjusted predictions for {X.shape[1]} clinical factors using multiple regression."
+                )
+            else:
+                # For single factor, use linregress
+                if isinstance(X, pd.DataFrame):
+                    X = X.iloc[:, 0]  # Convert to Series if it's a single-column DataFrame
+                
+                # Fit linear regression
+                model = stats.linregress(X, y)
+                
+                # Calculate residuals (unexplained variation)
+                predicted = model.predict(X)
+                residuals = y - predicted
+                
+                # Log adjustment results
+                self.monitor.logger.info(
+                    f"Adjusted predictions for clinical factors. "
+                    f"R-squared: {model.rvalue**2:.3f}"
+                )
             
             return residuals
             
@@ -169,9 +212,16 @@ class FairnessEvaluator:
         try:
             parity_metrics = {}
             
+            # Add predictions to data for calculations
+            self.data['adjusted_predictions'] = predictions
+            
             for factor in self.demographic_factors:
-                # Calculate prediction rates by demographic group
-                group_rates = predictions.groupby(factor).mean()
+                if factor not in self.data.columns:
+                    self.monitor.record_warning(f"Demographic factor '{factor}' not found in data")
+                    continue
+                    
+                # Calculate prediction rates by demographic group using the data DataFrame
+                group_rates = self.data.groupby(factor)['adjusted_predictions'].mean()
                 
                 # Calculate disparity
                 disparity = group_rates.max() - group_rates.min()
@@ -195,12 +245,20 @@ class FairnessEvaluator:
         try:
             opportunity_metrics = {}
             
+            # Add predictions to data for calculations if not already added
+            if 'adjusted_predictions' not in self.data.columns:
+                self.data['adjusted_predictions'] = predictions
+            
             for factor in self.demographic_factors:
+                if factor not in self.data.columns:
+                    self.monitor.record_warning(f"Demographic factor '{factor}' not found in data")
+                    continue
+                
                 # Calculate true positive rates by demographic group
                 group_tprs = {}
                 for group in self.data[factor].unique():
                     mask = self.data[factor] == group
-                    tpr = np.mean(predictions[mask] == self.phenotype_labels[mask])
+                    tpr = np.mean(self.data.loc[mask, 'adjusted_predictions'] == self.data.loc[mask, 'phenotype_labels'])
                     group_tprs[group] = tpr
                     
                 # Calculate disparity
@@ -225,12 +283,20 @@ class FairnessEvaluator:
         try:
             parity_metrics = {}
             
+            # Add predictions to data for calculations if not already added
+            if 'adjusted_predictions' not in self.data.columns:
+                self.data['adjusted_predictions'] = predictions
+            
             for factor in self.demographic_factors:
+                if factor not in self.data.columns:
+                    self.monitor.record_warning(f"Demographic factor '{factor}' not found in data")
+                    continue
+                
                 # Calculate positive predictive values by demographic group
                 group_ppvs = {}
                 for group in self.data[factor].unique():
                     mask = self.data[factor] == group
-                    ppv = np.mean(self.phenotype_labels[mask] == predictions[mask])
+                    ppv = np.mean(self.data.loc[mask, 'phenotype_labels'] == self.data.loc[mask, 'adjusted_predictions'])
                     group_ppvs[group] = ppv
                     
                 # Calculate disparity
@@ -255,13 +321,23 @@ class FairnessEvaluator:
         try:
             equality_metrics = {}
             
+            # Add predictions to data for calculations if not already added
+            if 'adjusted_predictions' not in self.data.columns:
+                self.data['adjusted_predictions'] = predictions
+            
             for factor in self.demographic_factors:
+                if factor not in self.data.columns:
+                    self.monitor.record_warning(f"Demographic factor '{factor}' not found in data")
+                    continue
+                
                 # Calculate false positive and false negative rates
                 group_rates = {}
                 for group in self.data[factor].unique():
                     mask = self.data[factor] == group
-                    fpr = np.mean((predictions[mask] == 1) & (self.phenotype_labels[mask] == 0))
-                    fnr = np.mean((predictions[mask] == 0) & (self.phenotype_labels[mask] == 1))
+                    fpr = np.mean((self.data.loc[mask, 'adjusted_predictions'] == 1) & 
+                                  (self.data.loc[mask, 'phenotype_labels'] == 0))
+                    fnr = np.mean((self.data.loc[mask, 'adjusted_predictions'] == 0) & 
+                                  (self.data.loc[mask, 'phenotype_labels'] == 1))
                     group_rates[group] = {'fpr': fpr, 'fnr': fnr}
                     
                 # Calculate disparity
@@ -290,10 +366,15 @@ class FairnessEvaluator:
         try:
             disparity_metrics = {}
             
+            # Get only numeric columns for mean calculation
+            numeric_columns = self.data.select_dtypes(include=[np.number]).columns
+            
             # Calculate pattern frequencies by phenotype
             for phenotype in self.phenotype_labels.unique():
                 mask = self.phenotype_labels == phenotype
-                pattern_freqs = self.data[mask].mean()
+                
+                # Only use numeric columns for pattern frequencies
+                pattern_freqs = self.data[mask][numeric_columns].mean()
                 
                 disparity_metrics[f'phenotype_{phenotype}'] = {
                     'pattern_frequencies': pattern_freqs.to_dict(),
@@ -624,4 +705,8 @@ class FairnessEvaluator:
     def __del__(self):
         """Cleanup when the object is destroyed."""
         if hasattr(self, 'monitor'):
-            self.monitor.stop_monitoring() 
+            try:
+                self.monitor.stop_monitoring()
+            except Exception:
+                # Silently handle errors during cleanup
+                pass 

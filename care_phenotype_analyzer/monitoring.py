@@ -21,6 +21,13 @@ import threading
 from queue import Queue
 import os
 
+# Add a custom JSON encoder for datetime objects
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
+
 @dataclass
 class PerformanceMetrics:
     """Data class for storing performance metrics."""
@@ -124,6 +131,30 @@ class SystemMonitor:
                 memory_percent = psutil.virtual_memory().percent
                 disk_usage = psutil.disk_usage('/').percent
                 
+                # Safely access records_processed attribute
+                try:
+                    records_count = self.records_processed
+                except AttributeError:
+                    # Handle the case where records_processed is not initialized
+                    records_count = 0
+                    self.records_processed = 0  # Initialize it
+                
+                # Safely access error_count attribute
+                try:
+                    error_count = self.error_count
+                except AttributeError:
+                    # Handle the case where error_count is not initialized
+                    error_count = 0
+                    self.error_count = 0  # Initialize it
+                
+                # Safely access warning_count attribute
+                try:
+                    warning_count = self.warning_count
+                except AttributeError:
+                    # Handle the case where warning_count is not initialized
+                    warning_count = 0
+                    self.warning_count = 0  # Initialize it
+                
                 # Create metrics object
                 metrics = PerformanceMetrics(
                     timestamp=datetime.now(),
@@ -132,9 +163,9 @@ class SystemMonitor:
                     disk_usage_percent=disk_usage,
                     processing_time=0.0,  # Will be updated by record_processing
                     batch_size=0,  # Will be updated by record_processing
-                    records_processed=self.records_processed,
-                    error_count=self.error_count,
-                    warning_count=self.warning_count
+                    records_processed=records_count,
+                    error_count=error_count,
+                    warning_count=warning_count
                 )
                 
                 # Add to queue
@@ -261,8 +292,14 @@ class SystemMonitor:
     def stop_monitoring(self):
         """Stop the monitoring system."""
         self.monitoring_active = False
-        self.metrics_thread.join()
-        self.health_thread.join()
+        
+        # Join threads with timeouts to prevent blocking
+        try:
+            self.metrics_thread.join(timeout=1.0)
+            self.health_thread.join(timeout=1.0)
+        except (RuntimeError, AttributeError):
+            # Handle cases where threads might not exist
+            pass
         
         # Save final metrics
         self._save_final_metrics()
@@ -275,9 +312,9 @@ class SystemMonitor:
         # Save metrics
         if not self.metrics_queue.empty():
             with open(metrics_file, 'w') as f:
-                json.dump(self.get_metrics_summary(), f, indent=2)
+                json.dump(self.get_metrics_summary(), f, indent=2, cls=DateTimeEncoder)
                 
         # Save health status
         if not self.health_queue.empty():
             with open(health_file, 'w') as f:
-                json.dump(self.get_health_status(), f, indent=2) 
+                json.dump(self.get_health_status(), f, indent=2, cls=DateTimeEncoder) 
