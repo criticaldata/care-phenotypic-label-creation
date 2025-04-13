@@ -113,6 +113,121 @@ Our framework includes implementations of several widely-used clinical scoring s
     \item \textbf{Elixhauser}: Assessment of 31 comorbidities
 \end{itemize}
 
+\subsection{Patient Cohort and Use Case}
+
+To demonstrate the application of care phenotypes in a clinically relevant context, we focused on sepsis management in the intensive care unit (ICU). Sepsis represents an ideal use case for care phenotype analysis due to its high mortality rate, established clinical protocols, and documented disparities in care. Despite standardized guidelines (e.g., Surviving Sepsis Campaign), significant variations exist in how septic patients are monitored and managed. This variation may reflect both appropriate clinical judgment and potential systematic biases.
+
+\subsubsection{Cohort Definition}
+
+The study population was defined using the following inclusion and exclusion criteria:
+
+\begin{itemize}
+    \item \textbf{Inclusion criteria:}
+    \begin{itemize}
+        \item Adult patients ($\geq$18 years) admitted to ICUs
+        \item Clinical diagnosis of sepsis using Sepsis-3 criteria (SOFA score increase $\geq$2 points)
+        \item Length of stay $\geq$24 hours to ensure sufficient monitoring data
+    \end{itemize}
+    \item \textbf{Exclusion criteria:}
+    \begin{itemize}
+        \item Patients with comfort-care-only orders
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Feature Space Definition}
+
+We defined a comprehensive feature space comprising three main categories:
+
+\paragraph{Clinical Factors} These represent objective measures of patient status and illness:
+
+\begin{itemize}
+    \item \textbf{Illness Severity Measures:}
+    \begin{itemize}
+        \item SOFA score components (respiratory, cardiovascular, hepatic, coagulation, renal, neurological)
+        \item APACHE-II score at admission
+        \item Lactate levels (initial and trend)
+        \item Vasopressor requirements (type and dose)
+    \end{itemize}
+    \item \textbf{Comorbidity Indices:}
+    \begin{itemize}
+        \item Charlson Comorbidity Index
+        \item Pre-existing conditions (diabetes, COPD, CHF, immunosuppression)
+        \item Prior history of sepsis or bacteremia
+    \end{itemize}
+    \item \textbf{Source of Infection:}
+    \begin{itemize}
+        \item Documented infection site (pulmonary, urinary, abdominal, etc.)
+        \item Culture results (positive/negative, organism identified)
+        \item Initial antibiotic appropriateness (if determinable)
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Care Patterns} These capture the observable care delivery patterns:
+
+\begin{itemize}
+    \item \textbf{Laboratory Monitoring Practices:}
+    \begin{itemize}
+        \item Frequency of complete blood count testing (tests per 24 hours)
+        \item Frequency of basic chemistry panel testing
+        \item Frequency of blood gas analysis
+        \item Frequency of lactate monitoring
+        \item Timing between abnormal results and repeat testing
+    \end{itemize}
+    \item \textbf{Hemodynamic Monitoring:}
+    \begin{itemize}
+        \item Arterial line placement timing (hours from sepsis recognition)
+        \item Central venous catheter placement (yes/no, timing)
+        \item Frequency of documented vital signs
+        \item Use of advanced hemodynamic monitoring (e.g., cardiac output)
+    \end{itemize}
+    \item \textbf{Treatment Escalation:}
+    \begin{itemize}
+        \item Time to first antibiotic from suspected infection
+        \item Time to fluid bolus administration
+        \item Time to vasopressor initiation when indicated
+        \item Frequency of antibiotic adjustments
+        \item ICU consult timing from recognition of deterioration
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Demographic Factors} These include patient characteristics and contextual factors:
+
+\begin{itemize}
+    \item Age (continuous and categorical: 18-44, 45-64, 65-75, $>$75)
+    \item Gender/sex
+    \item Race and ethnicity
+    \item Primary language
+    \item Insurance status
+    \item Admission time (weekday vs. weekend; day vs. night)
+    \item Hospital type (academic vs. community)
+    \item Geographic region (for multi-center data where available)
+\end{itemize}
+
+\subsubsection{Analysis Implementation}
+
+For this specific use case, we implemented the following analytical approaches:
+
+\begin{itemize}
+    \item \textbf{Clustering Parameters:}
+    \begin{itemize}
+        \item K-means clustering on care pattern features with k determined by elbow method and silhouette scores
+        \item Z-score normalization of features to ensure equal weighting
+        \item Cosine similarity as distance metric for time-based features
+    \end{itemize}
+    \item \textbf{Regression Modeling:}
+    \begin{itemize}
+        \item Primary outcome: Composite care intensity score (derived from monitoring frequency)
+        \item Predictors: All clinical factors
+        \item Model types: Linear regression for continuous outcomes, logistic regression for binary outcomes
+    \end{itemize}
+    \item \textbf{Fairness Evaluation:}
+    \begin{itemize}
+        \item Primary demographic comparisons: Race/ethnicity and insurance status
+        \item Secondary comparisons: Age, gender, admission timing
+        \item Specific metrics: Demographic parity in monitoring intensity, equal opportunity in timely intervention
+    \end{itemize}
+\end{itemize}
+
 \subsection{Core Functionality Implementation}
 
 \subsubsection{Pattern Analysis}
