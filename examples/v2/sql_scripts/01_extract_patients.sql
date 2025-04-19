@@ -3,7 +3,7 @@
 -- Compatible with MIMIC-IV on BigQuery
 
 -- Create or replace a table for the patient cohort
-CREATE OR REPLACE TABLE `your_dataset.patients_cohort` AS
+CREATE OR REPLACE TABLE `care-phenotypes.mimic_cohorts.patients_cohort` AS
 
 -- Select patients meeting inclusion criteria
 SELECT 
@@ -40,10 +40,10 @@ SELECT
     COUNT(DISTINCT icu.stay_id) AS num_icu_stays,
     SUM(DATETIME_DIFF(icu.outtime, icu.intime, HOUR)) / 24.0 AS total_icu_los_days
 
-FROM `physionet-data.mimic_core.patients` p
-JOIN `physionet-data.mimic_core.admissions` a 
+FROM `physionet-data.mimiciv_3_1_hosp.patients` p
+JOIN `physionet-data.mimiciv_3_1_hosp.admissions` a 
     ON p.subject_id = a.subject_id
-LEFT JOIN `physionet-data.mimic_icu.icustays` icu 
+LEFT JOIN `physionet-data.mimiciv_3_1_icu.icustays` icu 
     ON a.hadm_id = icu.hadm_id
 
 WHERE 
@@ -91,8 +91,8 @@ SELECT
     COUNTIF(ethnicity_simplified = 'Asian') / COUNT(*) * 100 AS pct_asian,
     COUNTIF(ethnicity_simplified = 'Other') / COUNT(*) * 100 AS pct_other
 
-FROM `your_dataset.patients_cohort`;
+FROM `care-phenotypes.mimic_cohorts.patients_cohort`;
 
 -- Export instructions:
 -- In BigQuery UI: Export the table as CSV to 'patients_cohort.csv'
--- Using CLI: bq extract your_dataset.patients_cohort '../data/patients_cohort.csv' 
+-- Using CLI: bq extract care-phenotypes.mimic_cohorts.patients_cohort '../data/patients_cohort.csv' 
