@@ -1,0 +1,6 @@
+# Placeholder file
+
+This directory is for MIMIC-IV data files.
+
+If using the SQL workflow, place the CSV files exported from SQL results here.
+If using the Python workflow, place the raw MIMIC CSV files here. 

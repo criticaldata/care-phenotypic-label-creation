@@ -1,0 +1,5 @@
+# Placeholder file
+
+This directory is for analysis results.
+
+The output of 02_create_phenotypes.py, 03_analyze_patterns.py, and 04_evaluate_fairness.py will be saved here. 

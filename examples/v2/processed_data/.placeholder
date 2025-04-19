@@ -1,0 +1,5 @@
+# Placeholder file
+
+This directory is for processed data files.
+
+The output of 01_prepare_data.py or the final SQL extraction script should be placed here. 
