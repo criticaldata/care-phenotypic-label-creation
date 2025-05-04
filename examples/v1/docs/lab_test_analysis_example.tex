@@ -78,6 +78,100 @@ z_i = \frac{x_i - \mu}{\sigma}
 
 where $\mu$ is the mean and $\sigma$ is the standard deviation of the feature.
 
+\subsection{Advanced Clustering Methods}
+
+While K-means provides a solid foundation, healthcare data often exhibits complex non-spherical structures. Alternative methods include:
+
+\subsubsection{Gaussian Mixture Models}
+
+For overlapping phenotypes, GMMs model the probability density as:
+
+\begin{align}
+p(\mathbf{x}) = \sum_{i=1}^{k} \pi_i \mathcal{N}(\mathbf{x}|\boldsymbol{\mu}_i, \boldsymbol{\Sigma}_i)
+\end{align}
+
+where $\pi_i$ represents mixture weights, and $\boldsymbol{\Sigma}_i$ allows for elliptical clusters.
+
+\subsubsection{Hierarchical Phenotype Structures}
+
+Healthcare patterns often exhibit hierarchical structures. Agglomerative clustering builds a dendrogram through:
+
+\begin{align}
+d(C_i \cup C_j, C_k) = \alpha_i d(C_i, C_k) + \alpha_j d(C_j, C_k) + \beta d(C_i, C_j) + \gamma |d(C_i, C_k) - d(C_j, C_k)|
+\end{align}
+
+where different values of $\alpha, \beta, \gamma$ yield different linkage criteria (single, complete, Ward's).
+
+\subsection{Bayesian Phenotype Modeling}
+
+Bayesian approaches provide principled uncertainty quantification:
+
+\subsubsection{Bayesian Cluster Assignment}
+
+The posterior probability of patient $i$ belonging to phenotype $k$:
+
+\begin{align}
+P(z_i = k | \mathbf{x}_i, \boldsymbol{\theta}) = \frac{\pi_k f_k(\mathbf{x}_i | \boldsymbol{\theta}_k)}{\sum_{j=1}^K \pi_j f_j(\mathbf{x}_i | \boldsymbol{\theta}_j)}
+\end{align}
+
+where $\pi_k$ is the prior probability and $f_k$ is the likelihood function.
+
+\subsubsection{Dirichlet Process Mixture Models}
+
+To automatically determine the number of phenotypes $K$:
+
+\begin{align}
+G &\sim DP(\alpha, G_0)\\
+\theta_i &\sim G\\
+x_i &\sim F(\theta_i)
+\end{align}
+
+where $DP(\alpha, G_0)$ is a Dirichlet process with concentration parameter $\alpha$ and base distribution $G_0$.
+
+\subsubsection{Hierarchical Bayesian Models}
+
+To model nested structures in healthcare institutions:
+
+\begin{align}
+\beta_{j,k} &\sim N(\mu_k, \tau_k^2)\\
+\mu_k &\sim N(\mu_0, \sigma_0^2)\\
+\tau_k^2 &\sim \text{InvGamma}(a, b)
+\end{align}
+
+This captures hospital-level effects nested within healthcare systems.
+
+\subsection{Temporal Dimension in Care Phenotypes}
+
+Healthcare delivery exhibits significant temporal patterns beyond static measurements:
+
+\subsubsection{Time-Series Representation}
+
+For patient $i$ with measurement $m$ over time points $t \in \{1,2,...,T\}$, we represent the time series as:
+
+\begin{align}
+\mathbf{X}_{i,m} = [x_{i,m,1}, x_{i,m,2}, ..., x_{i,m,T}]
+\end{align}
+
+\subsubsection{Dynamic Time Warping Distance}
+
+To compare care patterns with temporal shifts, we define the DTW distance:
+
+\begin{align}
+\text{DTW}(\mathbf{X}_i, \mathbf{X}_j) = \min_{\mathbf{w}} \sum_{k=1}^{K} d(w_{1k}, w_{2k})
+\end{align}
+
+where $\mathbf{w}$ is a warping path and $d(\cdot,\cdot)$ is a point-wise distance.
+
+\subsubsection{Frequency Domain Analysis}
+
+Spectral analysis reveals cyclical patterns in care delivery using the discrete Fourier transform:
+
+\begin{align}
+X_k = \sum_{n=0}^{N-1} x_n e^{-i2\pi kn/N}
+\end{align}
+
+This captures daily, weekly, and seasonal variations in care intensity.
+
 \subsection{Unexplained Variation Analysis}
 
 To separate legitimate clinical variation from potentially problematic unexplained variation, we employ a regression-based approach. For each care pattern $p$, we fit a linear regression model with clinical factors as predictors:
@@ -105,6 +199,30 @@ The coefficient of determination ($R^2$) quantifies the proportion of variation 
 \begin{align}
 R^2 = 1 - \frac{\sum_i (p_i - \hat{p}_i)^2}{\sum_i (p_i - \bar{p})^2}
 \end{align}
+
+\subsection{Uncertainty Quantification}
+
+Phenotype analysis requires robust uncertainty estimation:
+
+\subsubsection{Bootstrap Confidence Intervals}
+
+For statistic $\hat{\theta}$ (e.g., unexplained variation), we generate $B$ bootstrap samples and compute:
+
+\begin{align}
+CI_{1-\alpha}(\hat{\theta}) = [\hat{\theta}^*_{(\alpha/2)}, \hat{\theta}^*_{(1-\alpha/2)}]
+\end{align}
+
+where $\hat{\theta}^*_{(q)}$ is the $q$-quantile of bootstrap replicates.
+
+\subsubsection{Stability of Phenotype Assignment}
+
+The stability of cluster assignments can be assessed through the Adjusted Rand Index between multiple runs:
+
+\begin{align}
+\text{ARI} = \frac{\sum_{ij} \binom{n_{ij}}{2} - [\sum_i \binom{a_i}{2} \sum_j \binom{b_j}{2}]/\binom{n}{2}}{\frac{1}{2}[\sum_i \binom{a_i}{2} + \sum_j \binom{b_j}{2}] - [\sum_i \binom{a_i}{2} \sum_j \binom{b_j}{2}]/\binom{n}{2}}
+\end{align}
+
+where $n_{ij}$ represents objects in common between clusterings $i$ and $j$.
 
 \subsection{Statistical Significance of Phenotype Separation}
 
@@ -149,6 +267,36 @@ Equal opportunity measures whether the true positive rate is the same across dif
 
 where $Y$ represents the true labels.
 
+\subsection{Advanced Fairness Metrics}
+
+\subsubsection{Intersectional Fairness}
+
+For patients with multiple protected attributes, intersectional fairness considers joint distributions:
+
+\begin{align}
+\text{Intersectional Disparity} = |P(\hat{Y}=1|A=a, B=b) - P(\hat{Y}=1|A=a', B=b')|
+\end{align}
+
+\subsubsection{Counterfactual Fairness}
+
+A predictor $\hat{Y}$ is counterfactually fair if:
+
+\begin{align}
+P(\hat{Y}_{A \leftarrow a}(U) = y | X = x, A = a) = P(\hat{Y}_{A \leftarrow a'}(U) = y | X = x, A = a)
+\end{align}
+
+where $\hat{Y}_{A \leftarrow a}(U)$ denotes the prediction in the counterfactual world where $A$ is set to $a$.
+
+\subsubsection{Path-Specific Fairness}
+
+Using causal graphs to identify discriminatory and non-discriminatory paths:
+
+\begin{align}
+\text{PSE}_{A \rightarrow Y} = E[Y_{A \leftarrow a}(U) - Y_{A \leftarrow a', do(M_{A \leftarrow a})}(U)]
+\end{align}
+
+where $PSE$ is the path-specific effect through mediator $M$.
+
 \subsection{Care Pattern Disparity}
 
 Care pattern disparity quantifies differences in observable care patterns across phenotypes. For a care pattern $p$ and phenotypes $i$ and $j$:
@@ -158,6 +306,37 @@ Care pattern disparity quantifies differences in observable care patterns across
 \end{align}
 
 where $\bar{p}_i$ is the mean value of care pattern $p$ for patients in phenotype $i$.
+
+\subsection{Causal Inference in Care Phenotype Analysis}
+
+Beyond correlation, causal relationships provide deeper insights:
+
+\subsubsection{Potential Outcomes Framework}
+
+For treatment $T$ and outcome $Y$, we define causal effects through potential outcomes:
+
+\begin{align}
+\text{ATE} = E[Y(1) - Y(0)]
+\end{align}
+
+where $Y(t)$ is the potential outcome under treatment $t$.
+
+\subsubsection{Instrumental Variables for Care Disparities}
+
+When confounding exists, instrumental variables $Z$ that affect treatment $T$ but not outcome $Y$ directly can identify causal effects:
+
+\begin{align}
+\hat{\beta}_{IV} = \frac{Cov(Z,Y)}{Cov(Z,T)}
+\end{align}
+
+\subsubsection{Mediation Analysis}
+
+To decompose direct and indirect effects of demographic factors on care patterns:
+
+\begin{align}
+\text{Total Effect} &= \text{Direct Effect} + \text{Indirect Effect}\\
+\beta_{total} &= \beta_{direct} + \beta_{path1} \cdot \beta_{path2}
+\end{align}
 
 \section{Implementation and Algorithm}
 
@@ -196,6 +375,38 @@ The implementation of this mathematical framework follows the algorithm below:
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
+
+\subsection{Computational Complexity and Optimization}
+
+\subsubsection{Complexity Analysis}
+
+For $n$ patients and $d$ features, the computational complexity of k-means is:
+
+\begin{align}
+O(t \cdot k \cdot n \cdot d)
+\end{align}
+
+where $t$ is the number of iterations.
+
+\subsubsection{Mini-Batch Optimization}
+
+To handle large datasets, mini-batch processing updates parameters using:
+
+\begin{align}
+\theta^{(t+1)} = (1-\rho_t)\theta^{(t)} + \rho_t \nabla_{\theta} L(B_t, \theta^{(t)})
+\end{align}
+
+where $\rho_t$ is the learning rate and $B_t$ is the mini-batch at iteration $t$.
+
+\subsubsection{Dimensionality Reduction}
+
+Principal Component Analysis projects data to a lower-dimensional space:
+
+\begin{align}
+\mathbf{z}_i = \mathbf{W}^T(\mathbf{x}_i - \boldsymbol{\mu})
+\end{align}
+
+where $\mathbf{W}$ contains the top-$p$ eigenvectors of the covariance matrix.
 
 \section{Results Interpretation}
 
@@ -247,6 +458,31 @@ The scatter plot of lab test frequency versus SOFA score visualizes the relation
 \subsection{Temporal Analysis}
 
 The time series plot of lab test frequency reveals temporal patterns in monitoring intensity, which may indicate systematic variations in care delivery over time.
+
+\section{Connecting Theory to Implementation}
+
+The mathematical framework described here maps directly to our Python implementation:
+
+\begin{table}[h]
+\centering
+\caption{Mapping of Mathematical Concepts to Code Implementation}
+\begin{tabular}{p{0.35\textwidth}p{0.55\textwidth}}
+\toprule
+\textbf{Mathematical Concept} & \textbf{Implementation Detail} \\
+\midrule
+K-means clustering & scikit-learn's KMeans with customized initialization \\
+Z-score normalization & StandardScaler applied to care pattern features \\
+Unexplained variation analysis & StatModels OLS regression with R-squared calculation \\
+ANOVA testing & scipy.stats.f\_oneway with Bonferroni correction \\
+Fairness metrics & Custom implementation in FairnessEvaluator class \\
+Feature importance & Permutation importance with cross-validation \\
+Visualization & Matplotlib with seaborn integration \\
+Temporal analysis & pandas time-series functions with rolling windows \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The time complexity of our implementation scales as $O(n\log n)$ for most operations, with memory usage optimized through chunked processing for large datasets.
 
 \section{Discussion}
 
