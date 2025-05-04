@@ -97,10 +97,19 @@ pattern_analyzer.visualize_clinical_separation(
 
 ## Examples
 
-Check out the `examples/` directory for detailed examples:
+The project contains two versions of examples:
 
+### Version 1 Examples
+Basic examples showing the core functionality:
 - `lab_test_analysis_example.py`: Complete workflow for analyzing lab test patterns
-- Documentation in the examples/README.md file
+- Documentation in the v1/README.md file
+
+### Version 2 Examples
+More advanced examples focused on MIMIC database integration:
+- Detailed workflow for using the package with MIMIC data
+- SQL scripts for data extraction from MIMIC
+- Step-by-step instructions for cohort selection, phenotype creation, pattern analysis, and fairness evaluation
+- Documentation in the v2/README.md and workflow.md files
 
 ## Project Structure
 
@@ -138,8 +147,14 @@ care-phenotypic-label-creation/
 │   ├── test_synthetic_data.py
 │   └── test_visualization.py
 ├── examples/                     # Example scripts
-│   ├── lab_test_analysis_example.py
-│   └── README.md
+│   ├── v1/                       # Basic examples
+│   │   ├── lab_test_analysis_example.py
+│   │   └── README.md
+│   └── v2/                       # Advanced MIMIC-specific examples
+│       ├── sql_scripts/          # SQL scripts for MIMIC data extraction
+│       ├── scripts/              # Python scripts for the workflow
+│       ├── workflow.md           # Visual workflow representation
+│       └── README.md             # Detailed instructions
 ├── docs/                         # Documentation
 │   ├── API.md                    # API documentation
 │   ├── ARCHITECTURE.md           # Architecture details
